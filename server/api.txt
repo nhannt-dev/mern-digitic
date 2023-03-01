@@ -1,0 +1,100 @@
+[POST]  http://localhost:4000/api/user/register
+{
+    "email": "nguyentrongnhan04072000@gmail.com",
+    "password": "1234567890",
+    "firstname": "Nguyễn Trọng",
+    "lastname": "Nhân",
+    "mobile": "0356035625"
+}
+
+[POST]  http://localhost:4000/api/user/login
+{
+    "email": "nhan.nguyentrong.dev@gmail.com",
+    "password": "1234567890"
+}
+
+[GET]  http://localhost:4000/api/user/current
+
+[POST]  http://localhost:4000/api/user/refreshtoken
+
+[GET]  http://localhost:4000/api/user/logout
+
+[GET]  http://localhost:4000/api/user/forgotpassword?email=nguyentrongnhan04072000@gmail.com
+
+[PUT]  http://localhost:4000/api/user/resetpassword
+{
+    "password": "0987654321",
+    "token": "0f40c1139b34a33f5755cea00dc6e74854292b5ba949553ffa080bd3504a81d0"
+}
+
+[GET]  http://localhost:4000/api/user
+
+[DELETE]  http://localhost:4000/api/user?_id=:id
+
+[PUT]  http://localhost:4000/api/user/current
+{
+    "mobile": "0356235627"
+}
+Note: Có thể cập nhật bất kỳ trường nào cũng được
+
+[PUT]  http://localhost:4000/api/user/:uid
+{
+    "mobile": "0356235628"
+}
+Note: Có thể cập nhật bất kỳ trường nào cũng được
+
+[POST]  http://localhost:4000/api/product
+{
+    "title": "Điện thoại OPPO A57 128GB",
+    "description": "OPPO đã bổ sung thêm vào dòng sản phẩm OPPO A giá rẻ một thiết bị mới có tên OPPO A57 128GB. Khác với mẫu A57 5G đã được ra mắt trước đó, điện thoại dòng A mới có màn hình HD+, camera chính 13 MP và pin 5000 mAh.",
+    "brand": "Oppo",
+    "price": "1500"
+}
+
+[GET]  http://localhost:4000/api/product/:pid
+
+[GET]  http://localhost:4000/api/product
+
+[PUT]  http://localhost:4000/api/product/:pid
+{
+    "title": "Điện thoại iPhone 14 Plus 512GB",
+    "description": "iPhone 14 Plus 512GB có lẽ là cái tên không quá xa lạ đối với các tín đồ công nghệ bởi mức độ nổi tiếng gần như toàn cầu, khi vừa ra mắt sản phẩm đã tạo nên cơn sốt chưa từng có trong năm 2022 trên thị trường di động. Điện thoại sở hữu một con chip hiệu năng cao cùng bộ camera chất lượng giúp máy có thể đáp ứng tốt cho bạn đối với mọi tác vụ.",
+    "brand": "Apple",
+    "price": "3600",
+    "quantity": 10
+}
+
+[PUT]  http://localhost:4000/api/product/ratings
+{
+    "star": 3,
+    "pid": "63f5a9930218279cd6076844",
+    "comment": "nhannt-review"
+}
+
+[POST]  http://localhost:4000/api/prodcategory
+{
+    "title": "Điện thoại"
+}
+
+[GET]  http://localhost:4000/api/prodcategory
+
+[PUT]  http://localhost:4000/api/prodcategory
+{
+    "title": "Laptop"
+}
+
+[DELETE]  http://localhost:4000/api/prodcategory
+
+[POST]  http://localhost:4000/api/blogcategory
+{
+    "title": "Giải thích thuật ngữ"
+}
+
+[GET]  http://localhost:4000/api/blogcategory
+
+[PUT]  http://localhost:4000/api/blogcategory/:id
+{
+    "title": "Kiến thức công nghệ"
+}
+
+[DELETE]  http://localhost:4000/api/blogcategory/:id
