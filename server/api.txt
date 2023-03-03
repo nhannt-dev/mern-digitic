@@ -98,3 +98,24 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
 }
 
 [DELETE]  http://localhost:4000/api/blogcategory/:id
+
+[POST]  http://localhost:4000/api/blog
+{
+    "title": "iPhone 15 có mấy màu? Đâu là màu sắc đẹp nhất trong năm 2023?",
+    "description": "Năm ngoái, iPhone khuynh đảo thị trường điện thoại khi cho ra mắt iPhone 14 series. Bước qua năm 2023 này, iPhone 15 tiếp tục được đồn đoán sẽ mang lại những mẫu mã màu sắc mới lạ, đặc trưng. Vậy cùng Thế Giới Di Động tìm hiểu xem iPhone 15 có mấy màu.",
+    "category": "63fef82276dd76773d6b6138"
+}
+
+[PUT]  http://localhost:4000/api/blog/:id
+{
+    "title": "Sắm ngay Samsung Galaxy A34 5G chính thức mở bán với nhiều đột phá",
+    "description": "Nhắc đến điện thoại thông minh phổ biến nhất ở Việt Nam thì không thể nào không nêu tên điện thoại Samsung. Cùng Thế Giới Di Động xem qua những điểm độc đáo của Samsung Galaxy A34 5G trong bài viết dưới đây để đo đột hot của sản phẩm sắp mở bán này nhé!",
+    "category": "64015e25f0faf6a7e0933231"
+}
+
+[GET]  http://localhost:4000/api/blog
+
+[PUT]  http://localhost:4000/api/blog/like
+{
+    "bid": "64016ff8f187e9aa752a7181"
+}

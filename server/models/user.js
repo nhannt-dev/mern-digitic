@@ -1,6 +1,8 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 const bcrypt = require('bcrypt')
 const crypto = require('crypto')
+
+const { ObjectId } = mongoose.Types
 
 const userSchema = new mongoose.Schema({
     firstname: {
@@ -33,8 +35,8 @@ const userSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
-    address: [{ type: mongoose.Types.ObjectId, ref: 'Address' }],
-    wishlist: [{ type: mongoose.Types.ObjectId, ref: 'Product' }],
+    address: [{ type: ObjectId, ref: 'Address' }],
+    wishlist: [{ type: ObjectId, ref: 'Product' }],
     isBlocked: {
         type: Boolean,
         default: false
@@ -53,7 +55,7 @@ const userSchema = new mongoose.Schema({
     }
 }, {
     timestamps: true
-});
+})
 
 userSchema.pre('save', async function (next) {
     if (!this.isModified('password')) {
@@ -74,4 +76,4 @@ userSchema.methods = {
     }
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema)

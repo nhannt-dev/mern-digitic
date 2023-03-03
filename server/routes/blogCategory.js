@@ -1,13 +1,13 @@
 const router = require('express').Router()
 const { createCategory, getCategories, updateCategory, deleteCategory } = require('../controllers/blogCategory')
+const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 
-router.post('/', createCategory)
+router.post('/', [verifyAccessToken, isAdmin], createCategory)
 
 router.get('/', getCategories)
 
-router.put('/:bcid', updateCategory)
+router.put('/:bcid', [verifyAccessToken, isAdmin], updateCategory)
 
-router.delete('/:bcid', deleteCategory)
-
+router.delete('/:bcid', [verifyAccessToken, isAdmin], deleteCategory)
 
 module.exports = router
