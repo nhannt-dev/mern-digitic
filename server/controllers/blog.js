@@ -31,12 +31,12 @@ exports.getBlogs = asyncHandler(async (req, res) => {
 
 exports.likeBlog = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const { bid } = req.body
+    const { bid } = req.params
     if(!bid) throw new Error('Vui lòng nhập đầy đủ thông tin!')
     const blog = await Blog.findById(bid)
     const alreadyDisliked = blog?.dislikes?.find(el => el.toString() === _id)
     if (alreadyDisliked) {
-        const response = await Blog.findByIdAndUpdate(bid, {$pull: {dislikes: _id}}, { new: true })
+        const response = await Blog.findByIdAndUpdate(bid, {$pull: { dislikes: _id }}, { new: true })
         return res.json({
             success: response ? true : false,
             rs: response
@@ -44,16 +44,64 @@ exports.likeBlog = asyncHandler(async (req, res) => {
     }
     const isLiked = blog?.likes?.find(el => el.toString() === _id)
     if (isLiked) {
-        const response = await Blog.findByIdAndUpdate(bid, {$pull: {likes: _id}}, { new: true })
+        const response = await Blog.findByIdAndUpdate(bid, {$pull: { likes: _id }}, { new: true })
         return res.json({
             success: response ? true : false,
             rs: response
         })
     } else {
-        const response = await Blog.findByIdAndUpdate(bid, {$push: {likes: _id}}, { new: true })
+        const response = await Blog.findByIdAndUpdate(bid, {$push: { likes: _id }}, { new: true })
         return res.json({
             success: response ? true : false,
             rs: response
         })
     }
+})
+
+exports.dislikeBlog = asyncHandler(async (req, res) => {
+    const { _id } = req.user
+    const { bid } = req.params
+    if(!bid) throw new Error('Vui lòng nhập đầy đủ thông tin!')
+    const blog = await Blog.findById(bid)
+    const alreadyLiked = blog?.likes?.find(el => el.toString() === _id)
+    if (alreadyLiked) {
+        const response = await Blog.findByIdAndUpdate(bid, {$pull: { likes: _id }}, { new: true })
+        return res.json({
+            success: response ? true : false,
+            rs: response
+        })
+    }
+    const isDisliked = blog?.dislikes?.find(el => el.toString() === _id)
+    if (isDisliked) {
+        const response = await Blog.findByIdAndUpdate(bid, {$pull: { dislikes: _id }}, { new: true })
+        return res.json({
+            success: response ? true : false,
+            rs: response
+        })
+    } else {
+        const response = await Blog.findByIdAndUpdate(bid, {$push: { dislikes: _id }}, { new: true })
+        return res.json({
+            success: response ? true : false,
+            rs: response
+        })
+    }
+})
+
+exports.getBlog = asyncHandler(async (req, res) => {
+    const { bid } = req.params
+    const excludes = '-email -mobile -cart -address -wishlist -isBlocked -refreshToken -password -role -createdAt -updatedAt'
+    const blog = await Blog.findByIdAndUpdate(bid, {$inc: { numberViews: 1 }}, {new: true}).populate('likes', excludes).populate('dislikes', excludes)
+    return res.json({
+        success: blog ? true : false,
+        rs: blog
+    })
+})
+
+exports.deleteBlog = asyncHandler(async (req, res) => {
+    const { bid } = req.params
+    const blog = await Blog.findByIdAndDelete(bid)
+    return res.json({
+        success: blog ? true : false,
+        deletedBlog: blog || 'Có lỗi trong quá trình xóa blog'
+    })
 })

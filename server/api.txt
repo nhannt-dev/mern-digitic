@@ -115,7 +115,24 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
 
 [GET]  http://localhost:4000/api/blog
 
-[PUT]  http://localhost:4000/api/blog/like
+[GET]  http://localhost:4000/api/blog/one/:id
+
+[PUT]  http://localhost:4000/api/blog/like/:id
+
+[PUT]  http://localhost:4000/api/blog/dislike/:id
+
+[DELETE]  http://localhost:4000/api/blog/:id
+
+[POST]  http://localhost:4000/api/brand
 {
-    "bid": "64016ff8f187e9aa752a7181"
+    "title": "Apple"
 }
+
+[GET]  http://localhost:4000/api/brand
+
+[PUT]  http://localhost:4000/api/brand/:id
+{
+    "title": "Vivo"
+}
+
+[DELETE]  http://localhost:4000/api/brand/:id
