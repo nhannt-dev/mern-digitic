@@ -64,6 +64,8 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
     "quantity": 10
 }
 
+[PUT]  http://localhost:4000/api/product/uploadimage/:id
+
 [PUT]  http://localhost:4000/api/product/ratings
 {
     "star": 3,
@@ -136,3 +138,20 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
 }
 
 [DELETE]  http://localhost:4000/api/brand/:id
+
+[POST]  http://localhost:4000/api/coupon
+{
+    "name": "nhannt-01",
+    "discount": 15,
+    "expiry": "5" -> 5 days
+}
+
+[GET]  http://localhost:4000/api/coupon
+
+[PUT]  http://localhost:4000/api/coupon/:id
+{
+    "name": "nhannt-03",
+    "discount": 15,
+    "expiry": "7" -> 7 days
+}
+[DELETE]  http://localhost:4000/api/coupon/:id

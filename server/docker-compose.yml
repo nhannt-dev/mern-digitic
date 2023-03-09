@@ -1,0 +1,35 @@
+version: '3.9'
+services:
+  mongo_db:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    ports:
+      - 27107:27107
+      - 27108:27108
+    volumes:
+      - mongo_db:/data/db
+  
+  api:
+    build: .
+    ports:
+      - 4000:4000
+      - 4001:4001
+    volumes:
+      - .:/server
+    environment:
+      PORT: 4000
+      MONGODB_URI: mongodb+srv://admin:Nguyennhan4720@cluster0.zxoeo.mongodb.net/hip06?retryWrites=true&w=majority
+      JWT_SECRET: nhannt-dev
+      EMAIL_NAME: nhan.nguyentrong.dev@gmail.com
+      EMAIL_APP_PASSWORD: eocuwraoppwjtapt
+      URL_SERVER: http://localhost:4000
+      LIMIT_PRODUCTS: 3
+      CLOUDINARY_NAME: nhannt
+      CLOUDINARY_KEY: 374615425711595
+      CLOUDINARY_SECRET: cC4DzsfarNg7-lQmDDSU5Ak6lrQ
+    depends_on:
+      - mongo_db
+
+volumes:
+  mongo_db: {}

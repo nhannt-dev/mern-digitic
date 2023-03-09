@@ -103,3 +103,8 @@ exports.ratings = asyncHandler(async (req, res) => {
         updatedProduct
     })
 })
+
+exports.uploadImagesProduct = asyncHandler(async (req, res) => {
+    console.log(req.file)
+    return res.json('nhannt')
+})
