@@ -105,3 +105,13 @@ exports.deleteBlog = asyncHandler(async (req, res) => {
         deletedBlog: blog || 'Có lỗi trong quá trình xóa blog'
     })
 })
+
+exports.uploadImagesBlog = asyncHandler(async (req, res) => {
+    const { bid } = req.params
+    if (!req.file) throw new Error('Vui lòng tải lên ít nhất 1 hoặc 3 ảnh sản phẩm')
+    const response = await Blog.findByIdAndUpdate(bid, {image: req.file.path}, { new: true })
+    return res.status(200).json({
+        status: true,
+        updatedBlog: response ? response : 'Không thể tải ảnh blog lên hệ thống!'
+    })
+})

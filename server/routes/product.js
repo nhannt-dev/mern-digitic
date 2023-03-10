@@ -11,7 +11,7 @@ router.put('/ratings', verifyAccessToken, ratings)
 
 router.put('/:pid', [verifyAccessToken, isAdmin], updateProduct)
 
-router.put('/uploadimage/:pid', [verifyAccessToken, isAdmin], uploader.single('images'), uploadImagesProduct)
+router.put('/uploadimage/:pid', [verifyAccessToken, isAdmin], uploader.array('images', 3), uploadImagesProduct)
 
 router.delete('/:pid', [verifyAccessToken, isAdmin], deleteProduct)
 

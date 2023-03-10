@@ -37,11 +37,23 @@
 }
 Note: Có thể cập nhật bất kỳ trường nào cũng được
 
+[PUT]  http://localhost:4000/api/user/address
+{
+    "address": "40, Phú Hữu, phường 14, quận 5, HCMC"
+}
+
 [PUT]  http://localhost:4000/api/user/:uid
 {
     "mobile": "0356235628"
 }
 Note: Có thể cập nhật bất kỳ trường nào cũng được
+
+[PUT]  http://localhost:4000/api/user/cart
+{
+    "pid": "63f5a9930218279cd6076844",
+    "quantity": 2,
+    "color": "Black"
+}
 
 [POST]  http://localhost:4000/api/product
 {
@@ -65,6 +77,7 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
 }
 
 [PUT]  http://localhost:4000/api/product/uploadimage/:id
+Dùng formData trên tool tạo fields gửi tối đa 3 tấm ảnh dưới dạng file thôi nhé. Đồng thời có thể gửi bổ sung ảnh luôn nhé.
 
 [PUT]  http://localhost:4000/api/product/ratings
 {
@@ -114,6 +127,10 @@ Note: Có thể cập nhật bất kỳ trường nào cũng được
     "description": "Nhắc đến điện thoại thông minh phổ biến nhất ở Việt Nam thì không thể nào không nêu tên điện thoại Samsung. Cùng Thế Giới Di Động xem qua những điểm độc đáo của Samsung Galaxy A34 5G trong bài viết dưới đây để đo đột hot của sản phẩm sắp mở bán này nhé!",
     "category": "64015e25f0faf6a7e0933231"
 }
+
+
+[PUT]  http://localhost:4000/api/blog/image/:id
+Dùng formData trên tool tạo fields gửi tối đa 1 tấm ảnh dưới dạng file thôi nhé. Đồng thời có thể gửi bổ sung ảnh luôn nhé.
 
 [GET]  http://localhost:4000/api/blog
 

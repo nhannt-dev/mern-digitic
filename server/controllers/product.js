@@ -105,6 +105,11 @@ exports.ratings = asyncHandler(async (req, res) => {
 })
 
 exports.uploadImagesProduct = asyncHandler(async (req, res) => {
-    console.log(req.file)
-    return res.json('nhannt')
+    const { pid } = req.params
+    if (!req.files) throw new Error('Vui lòng tải lên ít nhất 1 hoặc 3 ảnh sản phẩm')
+    const response = await Product.findByIdAndUpdate(pid, {$push: {images: {$each: req.files.map(el => el.path)}}}, { new: true })
+    return res.status(200).json({
+        status: true,
+        updatedProduct: response ? response : 'Không thể tải ảnh sản phẩm lên hệ thống!'
+    })
 })
