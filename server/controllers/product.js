@@ -15,6 +15,7 @@ exports.createProduct = asyncHandler(async (req, res) => {
         createdProduct: newProduct ? newProduct : 'Không thể tạo sản phẩm'
     })
 })
+
 exports.getProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
     const product = await Product.findById(pid)
@@ -58,6 +59,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
         })
     })
 })
+
 exports.updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title)
@@ -67,6 +69,7 @@ exports.updateProduct = asyncHandler(async (req, res) => {
         updatedProduct: updatedProduct ? updatedProduct : 'Không thể cập nhật sản phẩm'
     })
 })
+
 exports.deleteProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
     const deletedProduct = await Product.findByIdAndDelete(pid)

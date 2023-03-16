@@ -13,19 +13,19 @@ const orderSchema = new mongoose.Schema({
             color: String
         }
     ],
-    status:{
+    status: {
         type: String,
         default: 'Processing',
-        enum: ['Cancelled', 'Processing', 'Successed'],
+        enum: ['Cancelled', 'Processing', 'Delivering', 'Succeed'],
     },
-    paymentIntent:{},
-    orderBy:{
+    total: Number,
+    coupon: {
+        type: ObjectId,
+        ref: 'Coupon'
+    },
+    orderBy: {
         type: ObjectId,
         ref: 'User'
-    },
-    password:{
-        type:String,
-        required:true,
     }
 })
 

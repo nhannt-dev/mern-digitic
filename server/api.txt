@@ -172,3 +172,17 @@ Dùng formData trên tool tạo fields gửi tối đa 1 tấm ảnh dưới d�
     "expiry": "7" -> 7 days
 }
 [DELETE]  http://localhost:4000/api/coupon/:id
+
+[POST]  http://localhost:4000/api/order
+{
+    "coupon": "cascas" -> Có thể nhập || không
+}
+
+[PUT]  http://localhost:4000/api/order/status/:id
+{
+    "status": "Delivering" -> Có thể nhập theo 1 trong 4 trạng thái
+}
+
+[GET]  http://localhost:4000/api/order
+
+[GET]  http://localhost:4000/api/order/admin

@@ -38,10 +38,7 @@ const userSchema = new mongoose.Schema({
             color: String
         }
     ],
-    address: {
-        type: Array,
-        default: []
-    },
+    address: String,
     wishlist: [{ type: ObjectId, ref: 'Product' }],
     isBlocked: {
         type: Boolean,
