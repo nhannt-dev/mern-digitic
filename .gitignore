@@ -1,8 +1,9 @@
-/server/node_modules
-/server/.env
-/server/.env.local
-/client/node_modules
-/client/.env
-/client/.env.local
+server/node_modules
+server/.env
+server/insert.http
+server/.env.local
+client/node_modules
+client/.env
+client/.env.local
 README.md
 scrape
