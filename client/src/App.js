@@ -1,14 +1,21 @@
-import logo from './logo.png';
-import './App.css';
+import React from 'react'
+import { Route, Routes } from 'react-router-dom'
+import { Home, Login, Public } from './pages/public'
+import path from './utils/path'
+
+const { HOME, LOGIN, PUBLIC } = path
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-      </header>
+    <div className='min-h-screen font-main'>
+      <Routes>
+        <Route path={PUBLIC} element={<Public />}>
+          <Route path={HOME} element={<Home />} />
+          <Route path={LOGIN} element={<Login />} />
+        </Route>
+      </Routes>
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
