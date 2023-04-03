@@ -9,7 +9,7 @@ const { HOME } = path
 
 const Header = () => {
   return (
-    <div className='border flex justify-between w-main h-[110px] py-[35px]'>
+    <div className='flex justify-between w-main h-[110px] py-[35px]'>
       <Link to={`/${HOME}`}>
         <img src={logo} alt='logo' className='w-[234px] object-contain' />
       </Link>
