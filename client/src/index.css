@@ -15,6 +15,7 @@ button.slick-prev {
 }
 
 button.slick-next::before {
+    border-radius: 50%;
     color: gray;
     content: '\276F';
     background-color: #ebc1c1;
@@ -27,6 +28,7 @@ button.slick-next::before {
 }
 
 button.slick-prev::before {
+    border-radius: 50%;
     color: gray;
     content: '\276E';
     background-color: #ebc1c1;
