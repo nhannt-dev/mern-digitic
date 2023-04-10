@@ -162,9 +162,9 @@ exports.updateUserByAdmin = asyncHandler(async (req, res) => {
 exports.updateUserAddress = asyncHandler(async (req, res) => {
     const { _id } = req.user
     if (!req.body.address) throw new Error('Vui lòng nhập đầy đủ thông tin!')
-    const response = await User.findByIdAndUpdate(_id, {$push: {address: req.body.address}}, { new: true }).select('-password -role -refreshToken')
+    const response = await User.findByIdAndUpdate(_id, { $push: { address: req.body.address } }, { new: true }).select('-password -role -refreshToken')
     return res.status(200).json({
-        success: response  ? true : false,
+        success: response ? true : false,
         updatedUser: response ? response : 'Có lỗi trong việc cập nhật địa chỉ người dùng!'
     })
 })
@@ -177,20 +177,20 @@ exports.updateCart = asyncHandler(async (req, res) => {
     const alreadyProduct = user?.cart?.find(el => el.product.toString() === pid)
     if (alreadyProduct) {
         if (alreadyProduct.color === color) {
-            const response = await User.updateOne({cart: {$elemMatch: alreadyProduct}}, {$set: {'cart.$.quantity': quantity}}, { new: true })
+            const response = await User.updateOne({ cart: { $elemMatch: alreadyProduct } }, { $set: { 'cart.$.quantity': quantity } }, { new: true })
             return res.json({
                 success: response ? true : false,
                 updatedUser: response ? response : 'Có lỗi trong quá trình thêm sản phẩm vào giỏ hàng!'
             })
         } else {
-            const response = await User.findByIdAndUpdate(_id, {$push: {cart: {product: pid, quantity, color}}}, { new: true })
+            const response = await User.findByIdAndUpdate(_id, { $push: { cart: { product: pid, quantity, color } } }, { new: true })
             return res.json({
                 success: response ? true : false,
                 updatedUser: response ? response : 'Có lỗi trong quá trình thêm sản phẩm vào giỏ hàng!'
             })
         }
     } else {
-        const response = await User.findByIdAndUpdate(_id, {$push: {cart: {product: pid, quantity, color}}}, { new: true })
+        const response = await User.findByIdAndUpdate(_id, { $push: { cart: { product: pid, quantity, color } } }, { new: true })
         return res.json({
             success: response ? true : false,
             updateUser: response ? response : 'Có lỗi trong quá trình thêm sản phẩm vào giỏ hàng!'

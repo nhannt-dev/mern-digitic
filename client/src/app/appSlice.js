@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice } from '@reduxjs/toolkit'
 import { getCategories } from './actions'
 
 export const appSlice = createSlice({
@@ -21,7 +21,5 @@ export const appSlice = createSlice({
         })
     }
 })
-
-export const {  } = appSlice.actions
 
 export default appSlice.reducer

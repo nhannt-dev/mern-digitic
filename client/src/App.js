@@ -12,7 +12,7 @@ function App() {
   useEffect(() => {
     dispatch(getCategories())
   }, [])
-  
+
   return (
     <div className='min-h-screen font-main'>
       <Routes>

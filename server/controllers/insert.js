@@ -17,13 +17,14 @@ const fn = async (product) => {
         quantity: Math.round(Math.random() * 1000),
         sold: Math.round(Math.random() * 100),
         images: product?.images,
-        color: product?.variants?.find(el => el.label === 'Color')?.variants[0]
+        color: product?.variants?.find(el => el.label === 'Color')?.variants[0],
+        totalRatings: Math.round(Math.random() * 5)
     })
 }
 
 exports.insertProduct = asyncHandler(async (req, res) => {
     const promises = []
-    for(let cate of data) promises.push(fn(cate))
+    for (let cate of data) promises.push(fn(cate))
     await Promise.all(promises)
     return res.status(200).json('Ghi dữ liệu thành công!')
 })
@@ -37,7 +38,7 @@ const fn2 = async (cate) => {
 
 exports.insertCategory = asyncHandler(async (req, res) => {
     const promises = []
-    for(let product of catgoryData) promises.push(fn2(product))
+    for (let product of catgoryData) promises.push(fn2(product))
     await Promise.all(promises)
     return res.status(200).json('Ghi dữ liệu thành công!')
 })

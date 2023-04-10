@@ -19,7 +19,7 @@ const initRoutes = (app) => {
     app.use('/api/coupon', couponRouter)
     app.use('/api/order', orderRouter)
     app.use('/api/insert', insertRouter)
-    
+
     app.use(notFound)
     app.use(errHandler)
 }

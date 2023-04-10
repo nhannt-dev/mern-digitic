@@ -26,7 +26,7 @@ exports.getProduct = asyncHandler(async (req, res) => {
 })
 // Filtering, sorting & pagination
 exports.getProducts = asyncHandler(async (req, res) => {
-    const queries = {...req.query}
+    const queries = { ...req.query }
     const excludeFields = ["page", "sort", "limit", "fields"] //Phân tách cách trường ra khỏi query
     excludeFields.forEach((el) => delete queries[el])
     let queryString = JSON.stringify(queries)
@@ -50,7 +50,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
     queryCommand.skip(skip).limit(limit)
 
     queryCommand.exec(async (err, response) => {
-        if(err) throw new Error(err.message)
+        if (err) throw new Error(err.message)
         const counts = await Product.find(formattedQueries).countDocuments()
         return res.status(200).json({
             success: response ? true : false,
@@ -87,7 +87,7 @@ exports.ratings = asyncHandler(async (req, res) => {
     const alreadyRating = ratingProduct?.ratings?.find(el => el.postedBy.toString() === _id)
     if (alreadyRating) {
         await Product.updateOne({
-            ratings: {$elemMatch: alreadyRating}
+            ratings: { $elemMatch: alreadyRating }
         }, {
             $set: { 'ratings.$.star': star, 'ratings.$.comment': comment }
         }, { new: true })
@@ -110,7 +110,7 @@ exports.ratings = asyncHandler(async (req, res) => {
 exports.uploadImagesProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
     if (!req.files) throw new Error('Vui lòng tải lên ít nhất 1 hoặc 3 ảnh sản phẩm')
-    const response = await Product.findByIdAndUpdate(pid, {$push: {images: {$each: req.files.map(el => el.path)}}}, { new: true })
+    const response = await Product.findByIdAndUpdate(pid, { $push: { images: { $each: req.files.map(el => el.path) } } }, { new: true })
     return res.status(200).json({
         status: true,
         updatedProduct: response ? response : 'Không thể tải ảnh sản phẩm lên hệ thống!'

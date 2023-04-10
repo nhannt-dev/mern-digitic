@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const { createOrder, updateStatus, getUserOrder, getOrders } = require('../controllers/order')
-const {  verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
+const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 
 router.post('/', verifyAccessToken, createOrder)
 

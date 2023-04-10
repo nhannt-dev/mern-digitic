@@ -9,7 +9,7 @@ const brandSchema = new mongoose.Schema({
         unique: true,
         index: true
     }
-}, { timestamps: true}
+}, { timestamps: true }
 )
 
 module.exports = mongoose.model('Brand', brandSchema)

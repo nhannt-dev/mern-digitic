@@ -40,8 +40,8 @@ const BestSeller = () => {
     }, [])
 
     useEffect(() => {
-        if(activedTab === 1) setProducts(bestSellers)
-        if(activedTab === 2) setProducts(newProducts)
+        if (activedTab === 1) setProducts(bestSellers)
+        if (activedTab === 2) setProducts(newProducts)
     }, [activedTab])
     return (
         <div>
@@ -53,9 +53,13 @@ const BestSeller = () => {
             <div className='mt-4 mx-[10px] border-t-2 border-main pt-4'>
                 <Slider {...settings}>
                     {products?.map((el, index) => (
-                        <Product key={index} productData={el} isNew={activedTab === 1 ? true : false}/>
+                        <Product key={index} productData={el} isNew={activedTab === 1 ? true : false} />
                     ))}
                 </Slider>
+            </div>
+            <div className='w-full flex gap-4 mt-4'>
+                <img className='flex-1 object-contain' src='https://cdn.shopify.com/s/files/1/1903/4853/files/banner2-home2_2000x_crop_center.png?v=1613166657' alt='nhannt' />
+                <img className='flex-1 object-contain' src='https://cdn.shopify.com/s/files/1/1903/4853/files/banner1-home2_2000x_crop_center.png?v=1613166657' alt='nhannt' />
             </div>
         </div>
     )
