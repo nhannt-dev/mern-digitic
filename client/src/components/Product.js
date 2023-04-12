@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { formatMoney } from '../utils/helpers'
+import { formatMoney, renderStar } from '../utils/helpers'
 import { label, label2 } from '../assets'
-import { renderStar } from '../utils/helpers'
 import Optional from './Optional'
 import icons from '../utils/icons'
 
