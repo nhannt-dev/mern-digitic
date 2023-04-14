@@ -1,3 +1,7 @@
 export {default as label} from './label.png'
 export {default as label2} from './label2.png'
 export {default as logo} from './logo.png'
+export {default as asus} from './asus.webp'
+export {default as gear3} from './gear3.avif'
+export {default as olloclip} from './olloclip.webp'
+export {default as sale} from './sale.avif'
