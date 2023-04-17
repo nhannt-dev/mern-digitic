@@ -30,7 +30,9 @@ const Product = ({ productData, isNew }) => {
         </div>
         <div className='flex flex-col mt-[15px] justify-start gap-1 items-start w-full'>
           <span className='line-clamp-1'>{productData?.title}</span>
-          <span className='flex h-4'>{renderStar(productData?.totalRatings)}</span>
+          <span className='flex h-4'>{renderStar(productData?.totalRatings)?.map((el, index) => (
+            <span key={index}>{el}</span>
+          ))}</span>
           <span>{formatMoney(productData?.price)} VND</span>
         </div>
       </div>

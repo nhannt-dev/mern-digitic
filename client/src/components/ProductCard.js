@@ -8,7 +8,9 @@ const ProductCard = ({ thumb, title, totalRatings, price }) => {
                 <img src={thumb} alt='nhannt' className='w-[120px] object-contain p-4' />
                 <div className='flex flex-col mt-[15px] items-start gap-1 w-full text-xs'>
                     <span className='line-clamp-1'>{title}</span>
-                    <span className='flex h-4'>{renderStar(totalRatings, 14)}</span>
+                    <span className='flex h-4'>{renderStar(totalRatings, 14)?.map((el, index) => (
+                        <span key={index}>{el}</span>
+                    ))}</span>
                     <span>{`${formatMoney(price)} VNĐ`}</span>
                 </div>
             </div>

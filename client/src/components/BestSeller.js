@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { apiGetProducts } from '../apis'
-import { Product } from '../components'
-import Slider from 'react-slick'
+import { CustomSlider } from '../components'
+import { getNewProducts } from '../app/actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const tabs = [
     {
@@ -14,29 +15,25 @@ const tabs = [
     }
 ]
 
-const settings = {
-    dots: false,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 3,
-    slidesToScroll: 1
-}
-
 const BestSeller = () => {
+    const dispatch = useDispatch()
+    const { newProducts } = useSelector(state => state.product)
+    
     const [bestSellers, setBestSellers] = useState(null)
-    const [newProducts, setNewProducts] = useState(null)
     const [activedTab, setActivedTab] = useState(1)
     const [products, setProducts] = useState(null)
 
     const fetchProducts = async () => {
-        const response = await Promise.all([apiGetProducts({ sort: '-sold' }), apiGetProducts({ sort: '-createdAt' })])
-        if (response[0]?.success) setBestSellers(response[0].products)
-        if (response[1]?.success) setNewProducts(response[1].products)
-        setProducts(response[0].products)
+        const response = await apiGetProducts({ sort: '-sold' })
+        if (response?.success) {
+            setBestSellers(response?.products)
+            setProducts(response?.products)
+        }
     }
 
     useEffect(() => {
         fetchProducts()
+        dispatch(getNewProducts())
     }, [])
 
     useEffect(() => {
@@ -51,11 +48,7 @@ const BestSeller = () => {
                 ))}
             </div>
             <div className='mt-4 mx-[10px] border-t-2 border-main pt-4'>
-                <Slider {...settings}>
-                    {products?.map((el, index) => (
-                        <Product key={index} productData={el} isNew={activedTab === 1 ? true : false} />
-                    ))}
-                </Slider>
+                <CustomSlider products={products} activedTab={activedTab} />
             </div>
             <div className='w-full flex gap-4 mt-4'>
                 <img className='flex-1 object-contain' src='https://cdn.shopify.com/s/files/1/1903/4853/files/banner2-home2_2000x_crop_center.png?v=1613166657' alt='nhannt' />

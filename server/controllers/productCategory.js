@@ -10,7 +10,7 @@ exports.createCategory = asyncHandler(async (req, res) => {
 })
 
 exports.getCategories = asyncHandler(async (req, res) => {
-    const response = await ProductCategory.find().select('_id title')
+    const response = await ProductCategory.find()
     return res.json({
         success: response ? true : false,
         prodCategories: response ? response : 'Có lỗi trong việc xem toàn bộ danh mục sản phẩm!'
