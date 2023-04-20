@@ -3,6 +3,10 @@ import { formatMoney, renderStar } from '../utils/helpers'
 import { label, label2 } from '../assets'
 import Optional from './Optional'
 import icons from '../utils/icons'
+import { Link } from 'react-router-dom'
+import path from '../utils/path'
+
+const { DETAIL_PRODUCT } = path
 
 const { AiFillEye, HiMenu, BsFillSuitHeartFill } = icons
 
@@ -10,7 +14,7 @@ const Product = ({ productData, isNew }) => {
   const [isShowOption, setIsShowOption] = useState(false)
   return (
     <div className='w-full text-base px-[10px]'>
-      <div className='w-full border rounded-sm p-[15px] flex flex-col items-center'
+      <Link to={`/${DETAIL_PRODUCT}/${productData?._id}/${productData?.title}`} className='w-full border rounded-sm p-[15px] flex flex-col items-center'
         onMouseEnter={e => {
           e.stopPropagation()
           setIsShowOption(true)
@@ -35,7 +39,7 @@ const Product = ({ productData, isNew }) => {
           ))}</span>
           <span>{formatMoney(productData?.price)} VND</span>
         </div>
-      </div>
+      </Link>
     </div>
   )
 }
