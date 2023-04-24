@@ -10,7 +10,7 @@ exports.register = asyncHandler(async (req, res) => {
     const { email, password, firstname, lastname } = req.body
     if (!email || !password || !lastname || !firstname)
         return res.status(400).json({
-            sucess: false,
+            success: false,
             mes: 'Vui lòng nhập đầy đủ thông tin!'
         })
 
@@ -19,7 +19,7 @@ exports.register = asyncHandler(async (req, res) => {
     else {
         const newUser = await User.create(req.body)
         return res.status(200).json({
-            sucess: newUser ? true : false,
+            success: newUser ? true : false,
             mes: newUser ? 'Đăng ký thành công. Vui lòng đăng nhập' : 'Có lỗi trong quá trình thao tác'
         })
     }
@@ -29,7 +29,7 @@ exports.login = asyncHandler(async (req, res) => {
     const { email, password } = req.body
     if (!email || !password)
         return res.status(400).json({
-            sucess: false,
+            success: false,
             mes: 'Vui lòng nhập đầy đủ thông tin!'
         })
     const response = await User.findOne({ email })
@@ -40,7 +40,7 @@ exports.login = asyncHandler(async (req, res) => {
         await User.findByIdAndUpdate(response._id, { refreshToken: newRefreshToken }, { new: true })
         res.cookie('refreshToken', newRefreshToken, { httpOnly: true, maxAge: 7 * 24 * 60 * 60 * 1000 })
         return res.status(200).json({
-            sucess: true,
+            success: true,
             accessToken,
             userData
         })

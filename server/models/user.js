@@ -7,11 +7,11 @@ const { ObjectId } = mongoose.Types
 const userSchema = new mongoose.Schema({
     firstname: {
         type: String,
-        required: true,
+        required: true
     },
     lastname: {
         type: String,
-        required: true,
+        required: true
     },
     email: {
         type: String,
@@ -21,15 +21,15 @@ const userSchema = new mongoose.Schema({
     mobile: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
     },
     password: {
         type: String,
-        required: true,
+        required: true
     },
     role: {
         type: String,
-        default: 'user',
+        default: 'user'
     },
     cart: [
         {
