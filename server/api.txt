@@ -19,7 +19,10 @@
 
 [GET]  http://localhost:4000/api/user/logout
 
-[GET]  http://localhost:4000/api/user/forgotpassword?email=nguyentrongnhan04072000@gmail.com
+[POST]  http://localhost:4000/api/user/forgotPassword
+{
+    "email": "nguyentrongnhan04072000@gmail.com"
+}
 
 [PUT]  http://localhost:4000/api/user/resetpassword
 {

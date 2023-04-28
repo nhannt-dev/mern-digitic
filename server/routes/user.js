@@ -1,8 +1,10 @@
 const router = require('express').Router()
-const { register, login, getCurrent, refreshAccessToken, logout, forgotPassword, resetPassword, getUsers, deleteUser, updateUser, updateUserByAdmin, updateUserAddress, updateCart } = require('../controllers/user')
+const { register, finalregister, login, getCurrent, refreshAccessToken, logout, forgotPassword, resetPassword, getUsers, deleteUser, updateUser, updateUserByAdmin, updateUserAddress, updateCart } = require('../controllers/user')
 const { verifyAccessToken, isAdmin } = require('../middlewares/verifyToken')
 
 router.post('/register', register)
+
+router.get('/finalregister/:token', finalregister)
 
 router.post('/login', login)
 
@@ -12,7 +14,7 @@ router.post('/refreshtoken', refreshAccessToken)
 
 router.get('/logout', logout)
 
-router.get('/forgotpassword', forgotPassword)
+router.post('/forgotpassword', forgotPassword)
 
 router.put('/resetpassword', resetPassword)
 

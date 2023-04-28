@@ -2,27 +2,49 @@ const User = require('../models/user')
 const asyncHandler = require('express-async-handler')
 const { generateAccessToken, generateRefreshToken } = require('../middlewares/jwt')
 const jwt = require('jsonwebtoken')
-const sendMail = require('../ultils/sendMail')
+const sendMail = require('../utils/sendMail')
 const crypto = require('crypto')
-
+const uniqToken = require('uniqid')
 
 exports.register = asyncHandler(async (req, res) => {
-    const { email, password, firstname, lastname } = req.body
-    if (!email || !password || !lastname || !firstname)
+    const { email, password, firstname, lastname, mobile } = req.body
+    if (!email || !password || !lastname || !firstname || !mobile) {
         return res.status(400).json({
             success: false,
             mes: 'Vui lòng nhập đầy đủ thông tin!'
         })
-
+    }
     const user = await User.findOne({ email })
     if (user) throw new Error('Người dùng đã tồn tại')
     else {
-        const newUser = await User.create(req.body)
-        return res.status(200).json({
-            success: newUser ? true : false,
-            mes: newUser ? 'Đăng ký thành công. Vui lòng đăng nhập' : 'Có lỗi trong quá trình thao tác'
+        const token = uniqToken()
+        const html = `Xin vui lòng nhấn vào link dưới đây để hoàn tất đăng ký của bạn. Liên kết này sẽ hết hạn sau 15 phút nữa kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/finalregister/${token}>Click here</a>`
+        res.cookie('dataregister', { ...req.body, token }, { httpOnly: true, maxAge: 15 * 60 * 1000 })
+        await sendMail({ email, html, subject: 'Hoàn tất đăng ký' })
+        return res.json({
+            success: true,
+            mes: 'Vui lòng kiểm tra email của bạn'
         })
     }
+})
+
+exports.finalregister = asyncHandler(async (req, res) => {
+    const cookie = req.cookies
+    const { token } = req.params
+    if (!cookie || cookie?.dataregister?.token !== token) {
+        res.clearCookie('dataregister')
+        return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`)
+    }
+    const newUser = await User.create({ 
+        email: cookie?.dataregister?.email,
+        password: cookie?.dataregister?.password,
+        firstname: cookie?.dataregister?.firstname,
+        lastname: cookie?.dataregister?.lastname,
+        mobile: cookie?.dataregister?.mobile
+    })
+    res.clearCookie('dataregister')
+    if (newUser) return res.redirect(`${process.env.CLIENT_URL}/finalregister/success`)
+    else return res.redirect(`${process.env.CLIENT_URL}/finalregister/failed`)
 })
 
 exports.login = asyncHandler(async (req, res) => {
@@ -84,18 +106,19 @@ exports.logout = asyncHandler(async (req, res) => {
 })
 
 exports.forgotPassword = asyncHandler(async (req, res) => {
-    const { email } = req.query
+    const { email } = req.body
     if (!email) throw new Error('Vui lòng nhập email')
     const user = await User.findOne({ email })
     if (!user) throw new Error('Người dùng không tồn tại')
     const resetToken = user.createPasswordChangedToken()
     await user.save()
 
-    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn.Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.URL_SERVER}/api/user/reset-password/${resetToken}>Click here</a>`
+    const html = `Xin vui lòng click vào link dưới đây để thay đổi mật khẩu của bạn. Link này sẽ hết hạn sau 15 phút kể từ bây giờ. <a href=${process.env.CLIENT_URL}/reset-password/${resetToken}>Click here</a>`
 
     const data = {
         email,
-        html
+        html,
+        subject: 'Quên mật khẩu'
     }
     const rs = await sendMail(data)
     return res.status(200).json({

@@ -1,7 +1,7 @@
 const Product = require('../models/product')
 const asyncHandler = require('express-async-handler')
 const slugify = require('slugify')
-const { unsignedConverter } = require('../ultils/unsignedConverter')
+const { unsignedConverter } = require('../utils/unsignedConverter')
 
 exports.createProduct = asyncHandler(async (req, res) => {
     if (Object.keys(req.body).length === 0) throw new Error('Vui lòng nhập đầy đủ thông tin!')
