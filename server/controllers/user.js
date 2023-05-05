@@ -120,10 +120,10 @@ exports.forgotPassword = asyncHandler(async (req, res) => {
         html,
         subject: 'Quên mật khẩu'
     }
-    const rs = await sendMail(data)
+    await sendMail(data)
     return res.status(200).json({
         success: true,
-        rs
+        mes: 'Vui lòng kiểm tra email của bạn!'
     })
 })
 
