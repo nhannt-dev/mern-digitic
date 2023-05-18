@@ -69,7 +69,9 @@ const DealDaily = () => {
       <div className='flex w-full flex-col items-center pt-8 px-4 gap-2'>
         <img src={dealDaily?.thumb || 'https://t4.ftcdn.net/jpg/05/75/04/63/240_F_575046386_GObMZs7kBHMT9I1luFChgaWli8WcZiQy.jpg'} alt='nhannt' className='w-full object-contain' />
         <span className='line-clamp-1 text-center'>{dealDaily?.title}</span>
-        <span className='flex h-4'>{renderStar(dealDaily?.totalRatings, 20)}</span>
+        <span className='flex h-4'>{renderStar(dealDaily?.totalRatings, 20)?.map((el, index) => (
+          <span key={index}>{el}</span>
+        ))}</span>
         <span>{formatMoney(dealDaily?.price)} VND</span>
       </div>
       <div className='px-4 mt-8'>

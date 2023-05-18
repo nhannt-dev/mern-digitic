@@ -41,9 +41,9 @@ const Home = () => {
                   <h4 className='font-semibold uppercase'>{el?.title}</h4>
                   <ul className='text-sm'>
                     {el?.brand?.map((item, index) => (
-                      <span className='flex gap-2 items-center text-gray-500 cursor-pointer hover:text-main'>
+                      <span key={index} className='flex gap-2 items-center text-gray-500 cursor-pointer hover:text-main'>
                         <MdKeyboardArrowRight size={14} />
-                        <li key={index}>{item}</li>
+                        <li>{item}</li>
                       </span>
                     ))}
                   </ul>
