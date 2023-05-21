@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { InputField, Button } from '../../components'
 import { useNavigate } from 'react-router-dom'
-import { apiLogin, apiRegister, apiForgotPassword } from '../../apis'
+import { apiLogin, apiRegister, apiForgotPassword, apiFinalRegister } from '../../apis'
 import Swal from 'sweetalert2'
 import path from '../../utils/path'
 import { login } from '../../app/userSlice'
@@ -22,9 +22,12 @@ const Login = () => {
     mobile: ''
   })
   const [invalid, setInvalid] = useState([])
+  const [isVerified, setIsVerified] = useState(false)
   const [isRegister, setIsRegister] = useState(false)
   const [isForgotPassword, setIsForgotPassword] = useState(false)
   const [email, setEmail] = useState('')
+  const [token, setToken] = useState('')
+
   const handleForgotPassword = async () => {
     const response = await apiForgotPassword({ email })
     if (response?.success) {
@@ -51,16 +54,8 @@ const Login = () => {
     if (invalid === 0) {
       if (isRegister) {
         const response = await apiRegister(payload)
-        Swal.fire(response?.success ? 'Thông báo' : 'Có lỗi trong quá trình thao tác', response?.mes, response?.success ? 'success' : 'error')
         if (response?.success) {
-          setIsRegister(false)
-          setPayload({
-            email: '',
-            firstname: '',
-            lastname: '',
-            password: '',
-            mobile: ''
-          })
+          setIsVerified(true)
         }
       } else {
         const response = await apiLogin(data)
@@ -77,8 +72,34 @@ const Login = () => {
     }
   }, [payload, isRegister])
 
+  const finalRegister = async () => {
+    const response = await apiFinalRegister(token)
+    if (response?.success) {
+      Swal.fire('Thông báo', response?.mes, 'success').then(() => {
+        setIsRegister(false)
+        setPayload({
+          email: '',
+          firstname: '',
+          lastname: '',
+          password: '',
+          mobile: ''
+        })
+      }
+      )
+    } else Swal.fire('Lỗi!', response?.mes, 'error')
+    setIsVerified(false)
+    setToken('')
+  }
+
   return (
     <div className='w-screen h-screen relative'>
+      {isVerified && <div className='absolute top-0 left-0 right-0 bottom-0 bg-overlay z-50 flex flex-col justify-center items-center'>
+        <div className='bg-white w-[500px] rounded-md p-8'>
+          <h4>Vui lòng nhập mã đăng ký chúng tôi đã gửi cho bạn vào ô bên dưới để hoàn tất quá trình đăng ký của bạn:</h4>
+          <input value={token} onChange={e => setToken(e.target.value)} className='p-2 border rounded-md outline-none' />
+          <button onClick={finalRegister} type='button' className='px-4 py-2 bg-blue-500 font-semibold text-white rounded-md ml-4'>Xác thực</button>
+        </div>
+      </div>}
       {isForgotPassword && <div className='absolute animate-slide-right top-0 left-0 bottom-0 right-0 bg-white flex flex-col items-center py-8 z-50'>
         <div className='flex flex-col gap-4'>
           <label htmlFor='email'>Your email:</label>
