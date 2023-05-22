@@ -5,6 +5,7 @@ import { FaUserCircle } from 'react-icons/fa'
 import { AiFillHome, AiFillStar, AiOutlineStar, AiFillEye } from 'react-icons/ai'
 import { HiMenu } from 'react-icons/hi'
 import { BsFillSuitHeartFill } from 'react-icons/bs'
+import { FiLogOut } from 'react-icons/fi'
 
 const icons = {
     RiPhoneFill,
@@ -17,7 +18,8 @@ const icons = {
     AiFillEye,
     HiMenu,
     BsFillSuitHeartFill,
-    MdKeyboardArrowRight
+    MdKeyboardArrowRight,
+    FiLogOut
 }
 
 export default icons

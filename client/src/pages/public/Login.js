@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { InputField, Button } from '../../components'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { apiLogin, apiRegister, apiForgotPassword, apiFinalRegister } from '../../apis'
 import Swal from 'sweetalert2'
 import path from '../../utils/path'
@@ -127,6 +127,7 @@ const Login = () => {
             {!isRegister && <span onClick={() => setIsRegister(true)} className='text-blue-500 cursor-pointer hover:underline'>Create account</span>}
             {isRegister && <span onClick={() => setIsRegister(false)} className='text-blue-500 cursor-pointer hover:underline w-full text-center'>Login now!</span>}
           </div>
+          <Link to={`/${HOME}`} className='text-blue-500 hover:underline text-sm cursor-pointer'>Go back</Link>
         </div>
       </div>
     </div>
