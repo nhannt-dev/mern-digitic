@@ -7,7 +7,7 @@ import { useDispatch } from 'react-redux'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-const { HOME, LOGIN, PUBLIC, BLOGS, OUR_SERVICES, DETAIL_PRODUCT__PID__TITLE, PRODUCTS, FINAL_REGISTER, RESET_PASSWORD } = path
+const { HOME, LOGIN, PUBLIC, BLOGS, OUR_SERVICES, DETAIL_PRODUCT__CATEGORY__PID__TITLE, PRODUCTS, FINAL_REGISTER, RESET_PASSWORD } = path
 
 function App() {
   const dispatch = useDispatch()
@@ -22,7 +22,7 @@ function App() {
           <Route path={HOME} element={<Home />} />
           <Route path={BLOGS} element={<Blogs />} />
           <Route path={PRODUCTS} element={<Products />} />
-          <Route path={DETAIL_PRODUCT__PID__TITLE} element={<DetailProduct />} />
+          <Route path={DETAIL_PRODUCT__CATEGORY__PID__TITLE} element={<DetailProduct />} />
           <Route path={path.FAQ} element={<FAQ />} />
           <Route path={OUR_SERVICES} element={<Services />} />
           <Route path={RESET_PASSWORD} element={<ResetPassword />} />
