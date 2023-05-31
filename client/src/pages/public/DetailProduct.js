@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { apiGetProduct } from '../../apis'
-import { Breadcrumb } from '../../components'
+import { Breadcrumb, Button, Quantity } from '../../components'
 import Slider from 'react-slick'
 import MagnifyImg from 'react-image-magnify'
+import { roundPrice, formatMoney, renderStar } from '../../utils/helpers'
 
 const settings = {
   dots: false,
@@ -16,11 +17,23 @@ const settings = {
 const DetailProduct = () => {
   const { pid, title, category } = useParams()
   const [product, setProduct] = useState(null)
+  const [quantity, setQuantity] = useState(1)
 
   const fetchDetail = async () => {
     const response = await apiGetProduct(pid)
     if (response?.success) setProduct(response?.productData)
   }
+
+  const handleQuantity = useCallback((number) => {
+    if (+number) setQuantity(+number)
+  }, [quantity])
+
+  const handleChangeQuantity = useCallback((flag) => {
+    if (flag === 'minus' && quantity === 1) return
+    if (flag === 'minus') setQuantity(qty => +qty - 1)
+    if (flag === 'plus' && quantity === 10) return
+    if (flag === 'plus') setQuantity(qty => +qty + 1)
+  }, [quantity])
 
   useEffect(() => {
     if (pid) fetchDetail()
@@ -30,7 +43,7 @@ const DetailProduct = () => {
     <div className='w-full mb-[500px]'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
         <div className='w-main'>
-          <h3>{title}</h3>
+          <h3 className=' font-semibold'>{title}</h3>
           <Breadcrumb title={title} category={category} />
         </div>
       </div>
@@ -60,7 +73,25 @@ const DetailProduct = () => {
             </Slider>
           </div>
         </div>
-        <div className='w-2/5'></div>
+        <div className='w-2/5 flex flex-col gap-4'>
+          <div className='flex items-center justify-between'>
+            <h2 className='text-[30px] font-bold'>{formatMoney(roundPrice(product?.price))} VND</h2>
+            <span className='text-sm text-main'>Kho: {product?.quantity}</span>
+          </div>
+          <div className='flex items-center gap-1'>
+            {renderStar(product?.totalRatings)}
+            <span className='text-sm text-main italic'>Đã bán: {product?.sold}</span>
+          </div>
+          <ul className='pl-4 list-square text-sm text-gray-500 leading-6'>
+            {product?.description?.map((el, index) => (
+              <li key={index}>{el}</li>
+            ))}
+          </ul>
+          <div className='flex flex-col gap-8'>
+            <Quantity quantity={quantity} handle={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
+            <Button name={'Add to cart'} fw />
+          </div>
+        </div>
         <div className='w-1/5'></div>
       </div>
     </div>
