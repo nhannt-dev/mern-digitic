@@ -1,10 +1,11 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { apiGetProduct } from '../../apis'
-import { Breadcrumb, Button, Quantity } from '../../components'
+import { apiGetProduct, apiGetProducts } from '../../apis'
+import { Breadcrumb, Button, Quantity, ExtraInfo, ProductInfo, CustomSlider } from '../../components'
 import Slider from 'react-slick'
 import MagnifyImg from 'react-image-magnify'
-import { roundPrice, formatMoney, renderStar } from '../../utils/helpers'
+import { roundPrice, formatMoney, renderStar, capitalize } from '../../utils/helpers'
+import { extraInfo } from '../../utils/constants'
 
 const settings = {
   dots: false,
@@ -18,10 +19,16 @@ const DetailProduct = () => {
   const { pid, title, category } = useParams()
   const [product, setProduct] = useState(null)
   const [quantity, setQuantity] = useState(1)
+  const [related, setRelated] = useState(null)
 
   const fetchDetail = async () => {
     const response = await apiGetProduct(pid)
     if (response?.success) setProduct(response?.productData)
+  }
+
+  const fetchProducts = async () => {
+    const response = await apiGetProducts({ category: capitalize(category) })
+    if (response?.success) setRelated(response?.products)
   }
 
   const handleQuantity = useCallback((number) => {
@@ -36,7 +43,10 @@ const DetailProduct = () => {
   }, [quantity])
 
   useEffect(() => {
-    if (pid) fetchDetail()
+    if (pid) {
+      fetchDetail()
+      fetchProducts()
+    }
   }, [pid])
 
   return (
@@ -88,11 +98,25 @@ const DetailProduct = () => {
             ))}
           </ul>
           <div className='flex flex-col gap-8'>
-            <Quantity quantity={quantity} handle={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
+            <div className='flex items-center gap-4'>
+              <span className='font-semibold'>Quantity: </span>
+              <Quantity quantity={quantity} handle={handleQuantity} handleChangeQuantity={handleChangeQuantity} />
+            </div>
             <Button name={'Add to cart'} fw />
           </div>
         </div>
-        <div className='w-1/5'></div>
+        <div className='w-1/5 p-4'>
+          {extraInfo?.map((el, index) => (
+            <ExtraInfo key={index} title={el.title} sub={el.sub} icon={el.icon} />
+          ))}
+        </div>
+      </div>
+      <div className='w-main m-auto mt-8'>
+        <ProductInfo />
+      </div>
+      <div className='w-main m-auto mt-8'>
+        <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main uppercase'>Other Customers also buy:</h3>
+        <CustomSlider products={related} />
       </div>
     </div>
   )
