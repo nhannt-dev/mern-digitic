@@ -33,6 +33,8 @@ exports.getProducts = asyncHandler(async (req, res) => {
     queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
     const formattedQueries = JSON.parse(queryString)
     if (queries?.title) formattedQueries.title = { $regex: queries.title, $options: 'i' }
+    if (queries?.category) formattedQueries.category = { $regex: queries.category, $options: 'i' }
+    if (queries?.color) formattedQueries.color = { $regex: queries.color, $options: 'i' }
     let queryCommand = Product.find(formattedQueries)
     if (req.query.sort) { //localhost:5000/api/product/sort=-price -> Sắp sếp giảm dần ngược lại tăng dần
         const sortBy = req.query.sort.split(",").join(" ")
