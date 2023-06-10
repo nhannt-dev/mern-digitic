@@ -2,28 +2,65 @@ import React, { memo, useEffect, useState } from 'react'
 import icons from '../utils/icons'
 import { colors } from '../utils/constants'
 import { createSearchParams, useNavigate, useParams } from 'react-router-dom'
+import { apiGetProducts } from '../apis'
+import { formatMoney } from '../utils/helpers'
+import useDebounce from '../utils/debounce'
 
 const { AiOutlineDown } = icons
 
 const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
     const { category } = useParams()
     const [selected, setSelected] = useState([])
+    const [highestPrice, setHighestPrice] = useState(0)
+    const [price, setPrice] = useState({
+        from: '',
+        to: ''
+    })
+
+    const fetchHighestPrice = async () => {
+        const response = await apiGetProducts({ sort: '-price', limit: 1 })
+        if (response?.success) setHighestPrice(response?.products[0]?.price)
+    }
+
+
     const handleSelect = (e) => {
         const already = selected.find(el => el === e.target.value)
         if (already) setSelected(prev => prev.filter(el => el !== e.target.value))
         else setSelected(prev => [...prev, e.target.value])
         changeActive(null)
     }
+    
     const navigate = useNavigate()
+    const debounceFrom = useDebounce(price.from, 500)
+    const debounceTo = useDebounce(price.to, 500)
 
     useEffect(() => {
+        if (selected.length > 0) {
+            navigate({
+                pathname: `/${category}`,
+                search: createSearchParams({
+                    color: selected.join(',')
+                }).toString()
+            })
+        } else {
+            navigate(`/${category}`)
+        }
+    }, [selected])
+
+    useEffect(() => {
+        if (type === 'input') fetchHighestPrice()
+    }, [])
+
+    useEffect(() => {
+        const data = {}
+        if (+price.from > 0) data.from = price.from
+        if (+price.to > 0) data.to = price.to
+
         navigate({
             pathname: `/${category}`,
-            search: createSearchParams({
-                color: selected
-            }).toString()
+            search: createSearchParams(data).toString()
         })
-    }, [selected])
+    }, [debounceFrom, debounceTo])
 
     return (
         <div onClick={() => changeActive(name)} className='cursor-pointer p-3 text-gray-500 gap-6 text-xs relative border border-gray-800 flex justify-between items-center'>
@@ -45,6 +82,26 @@ const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
                                 <label className='text-gray-700' htmlFor={el}>{el.toUpperCase()}</label>
                             </div>
                         ))}</div>
+                </div>}
+                {type === 'input' && <div onClick={e => e.stopPropagation()}>
+                    <div className='p-4 items-center flex justify-between gap-8 border-b'>
+                        <span className='whitespace-nowrap'>The highest price is {formatMoney(+highestPrice)} VND</span>
+                        <span onClick={(e) => {
+                            e.stopPropagation()
+                            setPrice({ from: '', to: '' })
+                            changeActive(null)
+                        }} className='cursor-pointer underline hover:text-main capitalize'>reset</span>
+                    </div>
+                    <div className='flex items-center p-2 gap-2'>
+                        <div className='flex items-center gap-2'>
+                            <label htmlFor='from'>From</label>
+                            <input onChange={e => setPrice(prev => ({ ...prev, from: e.target.value }))} value={price.from} className='form-input' type='number' id='from' />
+                        </div>
+                        <div className='flex items-center gap-2'>
+                            <label htmlFor='to'>To</label>
+                            <input onChange={e => setPrice(prev => ({ ...prev, to: e.target.value }))} value={price.to} className='form-input' type='number' id='to' />
+                        </div>
+                    </div>
                 </div>}
             </div>}
         </div>

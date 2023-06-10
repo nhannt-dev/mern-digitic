@@ -32,10 +32,17 @@ exports.getProducts = asyncHandler(async (req, res) => {
     let queryString = JSON.stringify(queries)
     queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
     const formattedQueries = JSON.parse(queryString)
+    let clqObject = {}
     if (queries?.title) formattedQueries.title = { $regex: queries.title, $options: 'i' }
     if (queries?.category) formattedQueries.category = { $regex: queries.category, $options: 'i' }
-    if (queries?.color) formattedQueries.color = { $regex: queries.color, $options: 'i' }
-    let queryCommand = Product.find(formattedQueries)
+    if (queries?.color) {
+        delete formattedQueries.color
+        const colorArr = queries.color?.split(',')
+        const clq = colorArr.map(el => ({ color: { $regex: el, $options: 'i' } }))
+        clqObject = { $or: clq }
+    }
+    const qs = { ...clqObject, ...formattedQueries }
+    let queryCommand = Product.find(qs)
     if (req.query.sort) { //localhost:5000/api/product/sort=-price -> Sắp sếp giảm dần ngược lại tăng dần
         const sortBy = req.query.sort.split(",").join(" ")
         queryCommand = queryCommand.sort(sortBy)
@@ -53,7 +60,7 @@ exports.getProducts = asyncHandler(async (req, res) => {
 
     queryCommand.exec(async (err, response) => {
         if (err) throw new Error(err.message)
-        const counts = await Product.find(formattedQueries).countDocuments()
+        const counts = await Product.find(qs).countDocuments()
         return res.status(200).json({
             success: response ? true : false,
             counts,
