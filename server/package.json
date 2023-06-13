@@ -4,9 +4,11 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "dockerBuild": "docker compose build",
+    "dockerUp": "docker compose up",
+    "dockerDown": "docker compose down"
   },
   "keywords": [],
   "author": "",

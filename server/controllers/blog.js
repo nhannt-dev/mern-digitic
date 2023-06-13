@@ -1,4 +1,4 @@
-const Blog = require('../models/Blog')
+const Blog = require('../models/blog')
 const asyncHandler = require('express-async-handler')
 
 exports.createBlog = asyncHandler(async (req, res) => {

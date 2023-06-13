@@ -126,3 +126,11 @@ export const sortBy = [
         text: 'Date, new to old'
     }
 ]
+
+export const status = [
+    'Rất tệ',
+    'Tệ',
+    'Thường',
+    'Tốt',
+    'Rất tốt'
+]

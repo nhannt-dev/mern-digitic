@@ -18,12 +18,17 @@ const settings = {
 const DetailProduct = () => {
   const { pid, title, category } = useParams()
   const [product, setProduct] = useState(null)
+  const [currentImg, setCurrentImg] = useState(null)
   const [quantity, setQuantity] = useState(1)
   const [related, setRelated] = useState(null)
+  const [update, setUpdate] = useState(false)
 
   const fetchDetail = async () => {
     const response = await apiGetProduct(pid)
-    if (response?.success) setProduct(response?.productData)
+    if (response?.success) {
+      setProduct(response?.productData)
+      setCurrentImg(response?.productData?.thumb)
+    }
   }
 
   const fetchProducts = async () => {
@@ -42,10 +47,24 @@ const DetailProduct = () => {
     if (flag === 'plus') setQuantity(qty => +qty + 1)
   }, [quantity])
 
+  const handleImg = (e, el) => {
+    e.stopPropagation()
+    setCurrentImg(el)
+  }
+
+  const reRender = useCallback(() => {
+    setUpdate(!update)
+  }, [update])
+
+  useEffect(() => {
+    if (pid) fetchProducts()
+  }, [update])
+
   useEffect(() => {
     if (pid) {
       fetchDetail()
       fetchProducts()
+      window.scrollTo(0, 0)
     }
   }, [pid])
 
@@ -59,17 +78,17 @@ const DetailProduct = () => {
       </div>
       <div className='w-main m-auto mt-4 flex'>
         <div className='flex flex-col gap-4 w-2/5'>
-          <div className='h-[458px] w-[458px] border'>
+          <div className='h-[458px] w-[458px] border overflow-hidden'>
             <MagnifyImg {...{
               smallImage: {
                 alt: 'Wristwatch by Ted Baker London',
                 isFluidWidth: true,
-                src: product?.thumb
+                src: currentImg
               },
               largeImage: {
-                src: product?.thumb,
                 width: 1800,
-                height: 1500
+                height: 1500,
+                src: currentImg
               }
             }} />
           </div>
@@ -77,7 +96,7 @@ const DetailProduct = () => {
             <Slider className='flex gap-2 justify-between' {...settings}>
               {product?.images?.map((el, index) => (
                 <div className='flex-1' key={index}>
-                  <img src={el} className='h-[143px] border object-cover' alt='nhannt-dev' />
+                  <img onClick={e => handleImg(e, el)} src={el} className='h-[143px] border object-cover cursor-pointer' alt='nhannt-dev' />
                 </div>
               ))}
             </Slider>
@@ -86,7 +105,7 @@ const DetailProduct = () => {
         <div className='w-2/5 flex flex-col gap-4'>
           <div className='flex items-center justify-between'>
             <h2 className='text-[30px] font-bold'>{formatMoney(roundPrice(product?.price))} VND</h2>
-            <span className='text-sm text-main'>Kho: {product?.quantity}</span>
+            <span className='text-sm text-main'>{product?.quantity > 0 ? `Kho: ${product?.quantity}` : 'Sản phẩm đã hết hàng'}</span>
           </div>
           <div className='flex items-center gap-1'>
             {renderStar(product?.totalRatings)}
@@ -112,7 +131,7 @@ const DetailProduct = () => {
         </div>
       </div>
       <div className='w-main m-auto mt-8'>
-        <ProductInfo />
+        <ProductInfo reRender={reRender} productName={product?.title} pid={product?._id} total={product?.totalRatings} totalReview={product?.ratings} />
       </div>
       <div className='w-main m-auto mt-8'>
         <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main uppercase'>Other Customers also buy:</h3>

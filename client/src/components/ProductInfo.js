@@ -1,9 +1,47 @@
-import React, { memo } from 'react'
+import React, { memo, useCallback, useState } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
+import { Vote, Button, VoteModal } from '.'
+import { renderStar } from '../utils/helpers'
+import { apiRatings } from '../apis'
+import { useDispatch, useSelector } from 'react-redux'
+import { showModal } from '../app/appSlice'
+import Swal from 'sweetalert2'
+import path from '../utils/path'
+import { useNavigate } from 'react-router-dom'
 
-const tabs = ['description', 'warranty', 'delivery', 'payment']
+const { LOGIN } = path
 
-const ProductInfo = () => {
+const tabs = ['description', 'warranty', 'delivery', 'payment', 'Comments & Ratings']
+
+const ProductInfo = ({ total, totalReview, productName, pid, reRender }) => {
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const { isLoggedIn } = useSelector(state => state.user)
+
+    const handleSubmitVoting = useCallback(async ({ comment, score }) => {
+        if (!comment || !pid || !score) {
+            alert('Vui lòng đánh giá đầy đủ')
+            return
+        }
+        await apiRatings({ star: score, comment, pid })
+        dispatch(showModal({isShowModal: false, modalChildren: null}))
+        reRender()
+    }, [])
+    const handleVote = () => {
+        if (!isLoggedIn) Swal.fire({
+            text: 'Vui lòng đăng nhập để thực hiện thao tác này',
+            cancelButtonText: 'Hủy',
+            confirmButtonText: 'Đi đến đăng nhập',
+            title: 'Thông báo',
+            showCancelButton: true
+        }).then(response => {
+            if (response.isConfirmed) navigate(`/${LOGIN}`)
+        })
+        else {
+            dispatch(showModal({ isShowModal: true, modalChildren: <VoteModal productName={productName} handleSubmitVoting={handleSubmitVoting} /> }))
+        }
+    }
+
     return (
         <Tabs>
             <TabList>
@@ -62,6 +100,24 @@ const ProductInfo = () => {
                     Delivery
                     Customers are able to pick the next available delivery day that best fits their schedule. However, to route stops as efficiently as possible, Shopify Shop will provide the time frame. Customers will not be able to choose a time. You will be notified in advance of your scheduled time frame. Please make sure that a responsible adult (18 years or older) will be home at that time.
                     In preparation for your delivery, please remove existing furniture, pictures, mirrors, accessories, etc. to prevent damages. Also insure that the area where you would like your furniture placed is clear of any old furniture and any other items that may obstruct the passageway of the delivery team. Shopify Shop will deliver, assemble, and set-up your new furniture purchase and remove all packing materials from your home. Our delivery crews are not permitted to move your existing furniture or other household items. Delivery personnel will attempt to deliver the purchased items in a safe and controlled manner but will not attempt to place furniture if they feel it will result in damage to the product or your home. Delivery personnel are unable to remove doors, hoist furniture or carry furniture up more than 3 flights of stairs. An elevator must be available for deliveries to the 4th floor and above.
+                </div>
+            </TabPanel>
+            <TabPanel>
+                <div className='border rounded-md p-3 flex'>
+                    <div className='flex-4 flex-col border flex items-center justify-center'>
+                        <span className='font-semibold text-3xl'>{total}/5</span>
+                        <span className='flex items-center gap-1'>{renderStar(total)}</span>
+                        <span>{totalReview?.length} lượt đánh giá</span>
+                    </div>
+                    <div className='flex-6 p-4 flex gap-2 flex-col-reverse border'>
+                        {Array.from(Array(5).keys()).map((el, index) => (
+                            <Vote key={index} num={+el + 1} ratingCount={totalReview?.filter(i => i.star === el + 1)?.length} total={totalReview?.length} />
+                        ))}
+                    </div>
+                </div>
+                <div className='p-4 flex items-center justify-center text-sm flex-col gap-2'>
+                    <span>Viết đánh giá</span>
+                    <Button handleOnClick={handleVote} name='Đánh giá ngay' />
                 </div>
             </TabPanel>
         </Tabs>
