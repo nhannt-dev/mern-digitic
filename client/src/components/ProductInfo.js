@@ -1,6 +1,6 @@
 import React, { memo, useCallback, useState } from 'react'
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs'
-import { Vote, Button, VoteModal } from '.'
+import { Vote, Button, VoteModal, Comment } from '.'
 import { renderStar } from '../utils/helpers'
 import { apiRatings } from '../apis'
 import { useDispatch, useSelector } from 'react-redux'
@@ -23,7 +23,7 @@ const ProductInfo = ({ total, totalReview, productName, pid, reRender }) => {
             alert('Vui lòng đánh giá đầy đủ')
             return
         }
-        await apiRatings({ star: score, comment, pid })
+        await apiRatings({ star: score, comment, pid, updatedAt: Date.now() })
         dispatch(showModal({isShowModal: false, modalChildren: null}))
         reRender()
     }, [])
@@ -118,6 +118,11 @@ const ProductInfo = ({ total, totalReview, productName, pid, reRender }) => {
                 <div className='p-4 flex items-center justify-center text-sm flex-col gap-2'>
                     <span>Viết đánh giá</span>
                     <Button handleOnClick={handleVote} name='Đánh giá ngay' />
+                </div>
+                <div className='flex flex-col gap-4'>
+                    {totalReview?.map((el, index) => (
+                        <Comment key={index} name={`${el?.postedBy?.firstname} ${el?.postedBy?.lastname}`} star={el?.star} updatedAt={el?.updatedAt} content={el?.comment}/>
+                    ))}
                 </div>
             </TabPanel>
         </Tabs>

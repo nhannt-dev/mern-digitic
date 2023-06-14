@@ -18,7 +18,13 @@ exports.createProduct = asyncHandler(async (req, res) => {
 
 exports.getProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
-    const product = await Product.findById(pid)
+    const product = await Product.findById(pid).populate({
+        path: 'ratings',
+        populate: {
+            path: 'postedBy',
+            select: 'firstname lastname avatar'
+        }
+    })
     return res.status(200).json({
         success: product ? true : false,
         productData: product ? product : 'Không thể xem sản phẩm'
@@ -90,7 +96,7 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
 
 exports.ratings = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const { star, pid, comment } = req.body
+    const { star, pid, comment, updatedAt } = req.body
     if (!star || !pid) throw new Error('Vui lòng nhập đầy đủ thông tin!')
     const ratingProduct = await Product.findById(pid)
     const alreadyRating = ratingProduct?.ratings?.find(el => el.postedBy.toString() === _id)
@@ -98,11 +104,11 @@ exports.ratings = asyncHandler(async (req, res) => {
         await Product.updateOne({
             ratings: { $elemMatch: alreadyRating }
         }, {
-            $set: { 'ratings.$.star': star, 'ratings.$.comment': comment }
+            $set: { 'ratings.$.star': star, 'ratings.$.comment': comment, 'ratings.$.updatedAt': updatedAt }
         }, { new: true })
     } else {
         await Product.findByIdAndUpdate(pid, {
-            $push: { ratings: { star, comment, postedBy: _id } }
+            $push: { ratings: { star, comment, postedBy: _id, updatedAt } }
         }, { new: true })
     }
     const updatedProduct = await Product.findById(pid)

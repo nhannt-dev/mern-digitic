@@ -131,7 +131,7 @@ const DetailProduct = () => {
         </div>
       </div>
       <div className='w-main m-auto mt-8'>
-        <ProductInfo reRender={reRender} productName={product?.title} pid={product?._id} total={product?.totalRatings} totalReview={product?.ratings} />
+        <ProductInfo reRender={reRender} productName={product?.title} pid={pid} total={product?.totalRatings} totalReview={product?.ratings} />
       </div>
       <div className='w-main m-auto mt-8'>
         <h3 className='text-[20px] font-semibold py-[15px] border-b-2 border-main uppercase'>Other Customers also buy:</h3>
