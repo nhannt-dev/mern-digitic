@@ -6,6 +6,7 @@ import { AiFillHome, AiFillGift, AiFillStar, AiOutlineStar, AiFillEye, AiOutline
 import { HiMenu } from 'react-icons/hi'
 import { BsFillSuitHeartFill, BsReplyFill } from 'react-icons/bs'
 import { FiLogOut } from 'react-icons/fi'
+import { BiDotsHorizontalRounded } from 'react-icons/bi'
 
 const icons = {
     RiPhoneFill,
@@ -25,7 +26,8 @@ const icons = {
     AiFillGift,
     BsReplyFill,
     FaTty,
-    AiOutlineDown
+    AiOutlineDown,
+    BiDotsHorizontalRounded
 }
 
 export default icons

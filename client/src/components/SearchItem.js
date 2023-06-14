@@ -1,7 +1,7 @@
 import React, { memo, useEffect, useState } from 'react'
 import icons from '../utils/icons'
 import { colors } from '../utils/constants'
-import { createSearchParams, useNavigate, useParams } from 'react-router-dom'
+import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { apiGetProducts } from '../apis'
 import { formatMoney } from '../utils/helpers'
 import useDebounce from '../utils/debounce'
@@ -10,6 +10,7 @@ const { AiOutlineDown } = icons
 
 const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
     const { category } = useParams()
+    const [params] = useSearchParams()
     const [selected, setSelected] = useState([])
     const [highestPrice, setHighestPrice] = useState(0)
     const [price, setPrice] = useState({
@@ -22,45 +23,52 @@ const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
         if (response?.success) setHighestPrice(response?.products[0]?.price)
     }
 
-
     const handleSelect = (e) => {
         const already = selected.find(el => el === e.target.value)
         if (already) setSelected(prev => prev.filter(el => el !== e.target.value))
         else setSelected(prev => [...prev, e.target.value])
         changeActive(null)
     }
-    
+
     const navigate = useNavigate()
     const debounceFrom = useDebounce(price.from, 500)
     const debounceTo = useDebounce(price.to, 500)
 
     useEffect(() => {
+        let param = []
+        const queries = {}
+        for (let i of params.entries()) param.push(i)
+        for (let i of param) queries[i[0]] = i[1]
         if (selected.length > 0) {
-            navigate({
-                pathname: `/${category}`,
-                search: createSearchParams({
-                    color: selected.join(',')
-                }).toString()
-            })
-        } else {
-            navigate(`/${category}`)
-        }
+            if (selected) queries.color = selected.join(',')
+            queries.page = 1
+        } else delete queries.color
+        navigate({
+            pathname: `/${category}`,
+            search: createSearchParams(queries).toString()
+        })
     }, [selected])
 
     useEffect(() => {
         if (type === 'input') fetchHighestPrice()
-    }, [])
+    }, [type])
 
     useEffect(() => {
-        const data = {}
-        if (+price.from > 0) data.from = price.from
-        if (+price.to > 0) data.to = price.to
-
+        let param = []
+        const queries = {}
+        for (let i of params.entries()) param.push(i)
+        for (let i of param) queries[i[0]] = i[1]
+        if (+price.from > 0) queries.from = price.from
+        else delete queries.from
+        if (+price.to > 0) queries.to = price.to
+        else delete queries.to
+        queries.page = 1
         navigate({
             pathname: `/${category}`,
-            search: createSearchParams(data).toString()
+            search: createSearchParams(queries).toString()
         })
     }, [debounceFrom, debounceTo])
+    
 
     return (
         <div onClick={() => changeActive(name)} className='cursor-pointer p-3 text-gray-500 gap-6 text-xs relative border border-gray-800 flex justify-between items-center'>
@@ -73,6 +81,7 @@ const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
                         <span onClick={(e) => {
                             e.stopPropagation()
                             setSelected([])
+                            changeActive(null)
                         }} className='cursor-pointer underline hover:text-main capitalize'>reset</span>
                     </div>
                     <div className='flex flex-col gap-3 mt-4' onClick={e => e.stopPropagation()}>

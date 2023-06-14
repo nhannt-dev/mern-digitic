@@ -59,3 +59,8 @@ export const validate = (payload, setInvalid) => {
 }
 
 export const roundPrice = price => Math.round(price / 1000) * 1000
+
+export const range = (start, end) => {
+    const length = (end + 1) - start
+    return Array.from({length},(_, index) => start + index)
+}

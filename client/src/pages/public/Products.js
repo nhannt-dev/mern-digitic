@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { createSearchParams, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Breadcrumb, Product, SearchItem, SelectField } from '../../components'
+import { Breadcrumb, Product, SearchItem, SelectField, Pagination } from '../../components'
 import { apiGetProducts } from '../../apis'
 import Masonry from 'react-masonry-css'
 import { sortBy } from '../../utils/constants'
@@ -23,7 +23,7 @@ const Products = () => {
 
   const fetchProducts = async (queries) => {
     const response = await apiGetProducts(queries)
-    if (response?.success) setProducts(response?.products)
+    if (response?.success) setProducts(response)
   }
 
   const changeValue = useCallback((value) => {
@@ -51,6 +51,9 @@ const Products = () => {
         ]
       }
       delete queries.price
+    } else {
+      if(queries.from) queries.price = {gte: queries.from}
+      if(queries.to) queries.price = {gte: queries.to}
     }
     delete queries.from
     delete queries.to
@@ -58,11 +61,14 @@ const Products = () => {
   }, [params])
 
   useEffect(() => {
-    navigate({
-      pathname: `/${category}`,
-      search: createSearchParams({ sort: sorts }).toString()
-    })
+    if (sorts) {
+      navigate({
+        pathname: `/${category}`,
+        search: createSearchParams({ sort: sorts }).toString()
+      })
+    }
   }, [sorts])
+  window.scrollTo(0, 0)
   return (
     <div className='w-full'>
       <div className='h-[81px] flex justify-center items-center bg-gray-100'>
@@ -88,10 +94,13 @@ const Products = () => {
       </div>
       <div className='mt-8 w-main m-auto'>
         <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid flex mx-[-10px]" columnClassName="my-masonry-grid_column">
-          {products?.map((el, index) => (
+          {products?.products?.map((el, index) => (
             <Product key={index} productData={el} normal />
           ))}
         </Masonry>
+      </div>
+      <div className='w-main m-auto my-4 flex justify-end'>
+        <Pagination total={products?.counts} />
       </div>
       <div className='w-full h-[500px]'>
         footer
