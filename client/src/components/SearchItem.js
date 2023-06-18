@@ -19,8 +19,8 @@ const SearchItem = ({ name, actived, changeActive, type = 'checkbox' }) => {
     })
 
     const fetchHighestPrice = async () => {
-        const response = await apiGetProducts({ sort: '-price', limit: 1 })
-        if (response?.success) setHighestPrice(response?.products[0]?.price)
+        const res = await apiGetProducts({ sort: '-price', limit: 1 })
+        if (res?.success) setHighestPrice(res?.products[0]?.price)
     }
 
     const handleSelect = (e) => {

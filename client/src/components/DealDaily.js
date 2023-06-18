@@ -20,9 +20,9 @@ const DealDaily = () => {
   const [second, setSecond] = useState(0)
   const [expire, setExpire] = useState(false)
   const fetchDealDaily = async () => {
-    const response = await apiGetProducts({ limit: 1, page: Math.round(Math.random() * 10), totalRatings: 5 })
-    if (response?.success) {
-      setDealDaily(response?.products[0])
+    const res = await apiGetProducts({ limit: 1, page: Math.round(Math.random() * 10), totalRatings: 5 })
+    if (res?.success) {
+      setDealDaily(res?.products[0])
       setHour(number.h)
       setMinute(number.m)
       setSecond(number.s)

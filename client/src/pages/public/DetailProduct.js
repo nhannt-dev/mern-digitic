@@ -24,16 +24,16 @@ const DetailProduct = () => {
   const [update, setUpdate] = useState(false)
 
   const fetchDetail = async () => {
-    const response = await apiGetProduct(pid)
-    if (response?.success) {
-      setProduct(response?.productData)
-      setCurrentImg(response?.productData?.thumb)
+    const res = await apiGetProduct(pid)
+    if (res?.success) {
+      setProduct(res?.productData)
+      setCurrentImg(res?.productData?.thumb)
     }
   }
 
   const fetchProducts = async () => {
-    const response = await apiGetProducts({ category: capitalize(category) })
-    if (response?.success) setRelated(response?.products)
+    const res = await apiGetProducts({ category: capitalize(category) })
+    if (res?.success) setRelated(res?.products)
   }
 
   const handleQuantity = useCallback((number) => {

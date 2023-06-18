@@ -78,7 +78,7 @@ exports.login = asyncHandler(async (req, res) => {
 
 exports.getCurrent = asyncHandler(async (req, res) => {
     const { _id } = req.user
-    const user = await User.findById(_id).select('-refreshToken -password -role')
+    const user = await User.findById(_id).select('-refreshToken -password')
     return res.status(200).json({
         success: user ? true : false,
         rs: user ? user : 'Người dùng không tồn tại'

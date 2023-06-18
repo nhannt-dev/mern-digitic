@@ -6,8 +6,8 @@ import { asus, gear3, olloclip, sale } from '../assets'
 const Feature = () => {
     const [products, setProducts] = useState(null)
     const fetchProducts = async () => {
-        const response = await apiGetProducts({ limit: 9, totalRatings: 5 })
-        if (response.success) setProducts(response.products)
+        const res = await apiGetProducts({ limit: 9, totalRatings: 5 })
+        if (res.success) setProducts(res.products)
     }
 
     useEffect(() => {

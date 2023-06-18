@@ -22,7 +22,7 @@ exports.verifyAccessToken = asyncHandler(async (req, res, next) => {
 
 exports.isAdmin = asyncHandler((req, res, next) => {
     const { role } = req.user
-    if (role !== 'admin')
+    if (+role !== 1)
         return res.status(401).json({
             success: false,
             mes: 'Yêu cầu quyền Admin'

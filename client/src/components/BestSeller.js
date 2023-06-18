@@ -24,10 +24,10 @@ const BestSeller = () => {
     const [products, setProducts] = useState(null)
 
     const fetchProducts = async () => {
-        const response = await apiGetProducts({ sort: '-sold' })
-        if (response?.success) {
-            setBestSellers(response?.products)
-            setProducts(response?.products)
+        const res = await apiGetProducts({ sort: '-sold' })
+        if (res?.success) {
+            setBestSellers(res?.products)
+            setProducts(res?.products)
         }
     }
 

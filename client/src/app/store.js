@@ -3,7 +3,7 @@ import storage from 'redux-persist/lib/storage'
 import appSlice from './appSlice'
 import productSlice from './productSlice'
 import userSlice from './userSlice'
-import { persistReducer, persistStore } from 'redux-persist'
+import { persistReducer, persistStore, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist'
 
 const commonConfig = {
   key: 'shop/user',
@@ -12,7 +12,7 @@ const commonConfig = {
 
 const userConfig = {
   ...commonConfig,
-  whitelist: ['isLoggedIn', 'token']
+  whitelist: ['isLoggedIn', 'token', 'current']
 }
 
 export const store = configureStore({
@@ -20,7 +20,12 @@ export const store = configureStore({
     app: appSlice,
     product: productSlice,
     user: persistReducer(userConfig, userSlice)
-  }
+  },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+    serializableCheck: {
+      ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER]
+    }
+  })
 })
 
-export const persistor =  persistStore(store)
+export const persistor = persistStore(store)

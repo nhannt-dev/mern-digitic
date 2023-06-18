@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { InputField, Button } from '../../components'
+import { InputField, Button, Loading } from '../../components'
 import { Link, useNavigate } from 'react-router-dom'
 import { apiLogin, apiRegister, apiForgotPassword, apiFinalRegister } from '../../apis'
 import Swal from 'sweetalert2'
@@ -8,6 +8,7 @@ import { login } from '../../app/userSlice'
 import { useDispatch } from 'react-redux'
 import { toast } from 'react-toastify'
 import { validate } from '../../utils/helpers'
+import { showModal } from '../../app/appSlice'
 
 const { HOME } = path
 
@@ -29,12 +30,12 @@ const Login = () => {
   const [token, setToken] = useState('')
 
   const handleForgotPassword = async () => {
-    const response = await apiForgotPassword({ email })
-    if (response?.success) {
-      toast.success(response?.mes)
+    const res = await apiForgotPassword({ email })
+    if (res?.success) {
+      toast.success(res?.mes)
       setIsForgotPassword(false)
     } else {
-      toast.error(response?.mes)
+      toast.error(res?.mes)
     }
   }
 
@@ -53,15 +54,17 @@ const Login = () => {
     const invalid = isRegister ? validate(payload, setInvalid) : validate(data, setInvalid)
     if (invalid === 0) {
       if (isRegister) {
-        const response = await apiRegister(payload)
-        if (response?.success) {
+        dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
+        const res = await apiRegister(payload)
+        dispatch(showModal({ isShowModal: false, modalChildren: null }))
+        if (res?.success) {
           setIsVerified(true)
         }
       } else {
-        const response = await apiLogin(data)
-        if (response?.success) {
-          dispatch(login({ isLoggedIn: true, token: response?.accessToken, userData: response?.userData }))
-          Swal.fire('Đăng nhập thành công.', response?.mes, 'success')
+        const res = await apiLogin(data)
+        if (res?.success) {
+          dispatch(login({ isLoggedIn: true, token: res?.accessToken, userData: res?.userData }))
+          Swal.fire('Đăng nhập thành công.', res?.mes, 'success')
           navigate(`/${HOME}`)
           setPayload({
             email: '',
@@ -73,9 +76,9 @@ const Login = () => {
   }, [payload, isRegister])
 
   const finalRegister = async () => {
-    const response = await apiFinalRegister(token)
-    if (response?.success) {
-      Swal.fire('Thông báo', response?.mes, 'success').then(() => {
+    const res = await apiFinalRegister(token)
+    if (res?.success) {
+      Swal.fire('Thông báo', res?.mes, 'success').then(() => {
         setIsRegister(false)
         setPayload({
           email: '',
@@ -86,7 +89,7 @@ const Login = () => {
         })
       }
       )
-    } else Swal.fire('Lỗi!', response?.mes, 'error')
+    } else Swal.fire('Lỗi!', res?.mes, 'error')
     setIsVerified(false)
     setToken('')
   }

@@ -11,12 +11,12 @@ const ResetPassword = () => {
   const navigate = useNavigate()
 
   const handleResetPassword = async () => {
-    const response = await apiResetPassword({ password, token })
-    if (response?.success) {
-      toast.success(response?.mes)
+    const res = await apiResetPassword({ password, token })
+    if (res?.success) {
+      toast.success(res?.mes)
       navigate('/')
     } else {
-      toast.error(response?.mes)
+      toast.error(res?.mes)
     }
   }
 

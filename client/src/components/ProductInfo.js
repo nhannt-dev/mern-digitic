@@ -34,8 +34,8 @@ const ProductInfo = ({ total, totalReview, productName, pid, reRender }) => {
             confirmButtonText: 'Đi đến đăng nhập',
             title: 'Thông báo',
             showCancelButton: true
-        }).then(response => {
-            if (response.isConfirmed) navigate(`/${LOGIN}`)
+        }).then(res => {
+            if (res.isConfirmed) navigate(`/${LOGIN}`)
         })
         else {
             dispatch(showModal({ isShowModal: true, modalChildren: <VoteModal productName={productName} handleSubmitVoting={handleSubmitVoting} /> }))

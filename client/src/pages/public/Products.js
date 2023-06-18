@@ -22,8 +22,8 @@ const Products = () => {
   const [params] = useSearchParams()
 
   const fetchProducts = async (queries) => {
-    const response = await apiGetProducts(queries)
-    if (response?.success) setProducts(response)
+    const res = await apiGetProducts(queries)
+    if (res?.success) setProducts(res)
   }
 
   const changeValue = useCallback((value) => {
