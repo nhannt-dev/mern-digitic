@@ -150,10 +150,36 @@ exports.resetPassword = asyncHandler(async (req, res) => {
 })
 
 exports.getUsers = asyncHandler(async (req, res) => {
-    const response = await User.find().select('-refreshToken -password -role')
-    return res.status(200).json({
-        success: response ? true : false,
-        users: response
+    const queries = { ...req.query }
+    const excludeFields = ["page", "sort", "limit", "fields"]
+    excludeFields.forEach((el) => delete queries[el])
+    let queryString = JSON.stringify(queries)
+    queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
+    const formattedQueries = JSON.parse(queryString)
+    if (queries?.name) formattedQueries.name = { $regex: queries.name, $options: 'i' }
+    let queryCommand = User.find(formattedQueries)
+    if (req.query.sort) {
+        const sortBy = req.query.sort.split(",").join(" ")
+        queryCommand = queryCommand.sort(sortBy)
+    }
+    if (req.query.fields) {
+        const fields = req.query.fields.split(',').join(" ")
+        queryCommand = queryCommand.select(fields)
+    }
+
+    const page = +req.query.page || 1
+    const limit = +req.query.limit || process.env.LIMIT_PRODUCTS
+    const skip = (page - 1) * limit
+    queryCommand.skip(skip).limit(limit)
+
+    queryCommand.exec(async (err, response) => {
+        if (err) throw new Error(err.message)
+        const counts = await User.find(formattedQueries).countDocuments()
+        return res.status(200).json({
+            success: response ? true : false,
+            counts,
+            users: response ? response : 'Không thể xem danh sách người dùng'
+        })
     })
 })
 

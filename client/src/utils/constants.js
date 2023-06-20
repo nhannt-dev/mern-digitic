@@ -1,8 +1,8 @@
 import icons from './icons'
 import path from './path'
 
-const { BsShieldShaded, BsReplyFill, AiFillGift, RiTruckFill, FaTty } = icons
-const { HOME, PRODUCTS, BLOGS, OUR_SERVICES, FAQ } = path
+const { BsShieldShaded, BsReplyFill, AiFillGift, RiTruckFill, FaTty, AiOutlineDashboard, MdGroups, BsFillBoxFill, RiBillFill } = icons
+const { HOME, PRODUCTS, BLOGS, OUR_SERVICES, FAQ, ADMIN, DASHBOARD, MANAGE_USER, CREATE_PRODUCT, MANAGE_PRODUCTS, MANAGE_ORDER } = path
 
 export const navigation = [
     {
@@ -133,4 +133,41 @@ export const status = [
     'Thường',
     'Tốt',
     'Rất tốt'
+]
+
+export const menuItems = [
+    {
+        type: 'single',
+        text: 'Dashboard',
+        path: `/${ADMIN}/${DASHBOARD}`,
+        icon: <AiOutlineDashboard />
+    },
+    {
+        type: 'single',
+        text: 'Manage users',
+        path: `/${ADMIN}/${MANAGE_USER}`,
+        icon: <MdGroups />
+    },
+    {
+        type: 'sub',
+        text: 'Product',
+        path: `/${ADMIN}/${MANAGE_USER}`,
+        icon: <BsFillBoxFill />,
+        submenu: [
+            {
+                text: 'Create product',
+                path: `/${ADMIN}/${CREATE_PRODUCT}`
+            },
+            {
+                text: 'Manage product',
+                path: `/${ADMIN}/${MANAGE_PRODUCTS}`
+            }
+        ]
+    },
+    {
+        type: 'single',
+        text: 'Manage Order',
+        path: `/${ADMIN}/${MANAGE_ORDER}`,
+        icon: <RiBillFill />
+    },
 ]

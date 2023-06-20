@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom'
 import path from '../utils/path'
 import { useSelector } from 'react-redux'
 
-const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle } = icons
+const { RiPhoneFill, MdEmail, BsHandbagFill, FaUserCircle, RiAdminFill } = icons
 const { HOME, MEMBER, DASHBOARD, PROFILE, ADMIN } = path
 
 const Header = () => {
@@ -37,8 +37,8 @@ const Header = () => {
             <span>0 item(s)</span>
           </div>
           <Link to={+current?.role === 1 ? `/${ADMIN}/${DASHBOARD}` : `/${MEMBER}/${PROFILE}`} className='gap-2 flex items-center px-6 justify-center'>
-            <FaUserCircle color='red' />
-            <span>Profile</span>
+            {+current?.role === 1 ? <RiAdminFill color='red' /> : <FaUserCircle color='red' />}
+            <span>{+current?.role === 1 ? 'Admin' : 'Profile'}</span>
           </Link>
         </>}
       </div>
