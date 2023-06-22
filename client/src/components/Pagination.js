@@ -15,8 +15,8 @@ const Pagination = ({ total }) => {
   }
   return (
     <div className='flex w-main justify-between items-center'>
-      {!+params.get('page') && <span className='text-sm italic'>Hiển thị 1 - 10 trong số {total} sản phẩm</span>}
-      {+params.get('page') && <span className='text-sm italic'>Hiển thị {range()} trong số {total} sản phẩm</span>}
+      {!+params.get('page') && <span className='text-sm italic'>Hiển thị 1 - {Math.min(total)} trong số {total}</span>}
+      {+params.get('page') && <span className='text-sm italic'>Hiển thị {range()} trong số {total}</span>}
       <div className='flex items-center'>
         {pagination?.map((el, index) => (
           <PaginationItem key={index}>{el}</PaginationItem>

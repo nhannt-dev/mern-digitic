@@ -157,11 +157,22 @@ exports.getUsers = asyncHandler(async (req, res) => {
     queryString = queryString.replace(/\b(gte|gt|lte|lt)\b/g, (match) => `$${match}`)
     const formattedQueries = JSON.parse(queryString)
     if (queries?.name) formattedQueries.name = { $regex: queries.name, $options: 'i' }
+
+    if (req.query.q) {
+        delete formattedQueries.q
+        formattedQueries['$or'] = [
+            { mobile: { $regex: queries.q, $options: 'i' } },
+            { email: { $regex: queries.q, $options: 'i' } }
+        ]
+    }
+    console.log(formattedQueries)
     let queryCommand = User.find(formattedQueries)
+
     if (req.query.sort) {
         const sortBy = req.query.sort.split(",").join(" ")
         queryCommand = queryCommand.sort(sortBy)
     }
+
     if (req.query.fields) {
         const fields = req.query.fields.split(',').join(" ")
         queryCommand = queryCommand.select(fields)

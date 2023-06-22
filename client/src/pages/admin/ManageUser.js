@@ -1,17 +1,25 @@
 import React, { useEffect, useState } from 'react'
 import { apiGetUsers } from '../../apis'
 import moment from 'moment'
+import useDebounce from '../../utils/debounce'
+import { Pagination } from '../../components'
 
 const ManageUser = () => {
   const [users, setUsers] = useState(null)
+  const [kw, setKw] = useState('')
+
   const fetchUsers = async (params) => {
-    const res = await apiGetUsers(params)
+    const res = await apiGetUsers({...params, limit: 1})
     if (res?.success) setUsers(res)
-    console.log(res);
   }
+
+  const kwDebounce = useDebounce(kw, 500)
+
   useEffect(() => {
-    fetchUsers()
-  }, [])
+    let params = {}
+    if (kwDebounce) params.q = kwDebounce
+    fetchUsers(params)
+  }, [kwDebounce])
 
   return (
     <div className='w-full'>
@@ -19,6 +27,11 @@ const ManageUser = () => {
         <span>Manage User</span>
       </h1>
       <div className='w-full p-4'>
+        <div className='flex justify-end py-4'>
+          <div className='bg-white w-[300px] h-[37px] rounded-md flex items-center px-3'>
+            <input value={kw} onChange={e => setKw(e.target.value)} className='w-full outline-none' placeholder='Search for mobile or email' />
+          </div>
+        </div>
         <table className='w-full table-auto mb-6 text-left'>
           <thead className='font-bold bg-gray-300 text-[13px] border border-gray-300 text-center'>
             <th className='px-4 py-2'>#</th>
@@ -48,6 +61,9 @@ const ManageUser = () => {
             ))}
           </tbody>
         </table>
+        <div className='flex justify-end w-full'>
+          <Pagination total={users?.counts}/>
+        </div>
       </div>
     </div>
   )
