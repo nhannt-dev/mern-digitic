@@ -20,7 +20,7 @@ router.put('/resetpassword', resetPassword)
 
 router.get('/', [verifyAccessToken, isAdmin], getUsers)
 
-router.delete('/', [verifyAccessToken, isAdmin], deleteUser)
+router.delete('/:uid', [verifyAccessToken, isAdmin], deleteUser)
 
 router.put('/current', [verifyAccessToken], updateUser)
 

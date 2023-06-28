@@ -171,3 +171,21 @@ export const menuItems = [
         icon: <RiBillFill />
     },
 ]
+
+export const roles = [
+    {
+        value: 'Admin'
+    },
+    {
+        value: 'User'
+    }
+]
+
+export const isBlockedStatus = [
+    {
+        value: true
+    },
+    {
+        value: false
+    }
+]

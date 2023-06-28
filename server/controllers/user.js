@@ -18,7 +18,7 @@ exports.register = asyncHandler(async (req, res) => {
     if (user) throw new Error('Người dùng đã tồn tại')
     else {
         const token = uniqToken()
-        const emailHash = btoa(email) + '@' + token
+        const emailHash = Buffer.from(email).toString('base64') + '@' + token
         const newUser = await User.create({ email: emailHash, password, firstname, lastname, mobile })
         if (newUser) {
             const html = `
@@ -43,7 +43,7 @@ exports.finalregister = asyncHandler(async (req, res) => {
     const { token } = req.params
     const notActivedEmail = await User.findOne({ email: new RegExp(`${token}$`) })
     if (notActivedEmail) {
-        notActivedEmail.email = atob(notActivedEmail?.email?.split('@')[0])
+        notActivedEmail.email = Buffer(notActivedEmail?.email?.split('@')[0]).toString()
         notActivedEmail.save()
     }
     return res.json({
@@ -195,9 +195,8 @@ exports.getUsers = asyncHandler(async (req, res) => {
 })
 
 exports.deleteUser = asyncHandler(async (req, res) => {
-    const { _id } = req.query
-    if (!_id) throw new Error('Vui lòng nhập đầy đủ thông tin!')
-    const response = await User.findByIdAndDelete(_id)
+    const { uid } = req.params
+    const response = await User.findByIdAndDelete(uid)
     return res.status(200).json({
         success: response ? true : false,
         deletedUser: response ? `Đã xóa người dùng ${response.email} thành công` : 'Không có người dùng để xóa'
