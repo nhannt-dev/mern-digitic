@@ -1,17 +1,34 @@
-import React from 'react'
+import React, { useCallback, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Form, Select, Button } from '../../components'
+import { Form, Select, Button, Markdown } from '../../components'
 import { useSelector } from 'react-redux'
+import { validate } from '../../utils/helpers'
 
 const CreateProduct = () => {
   const { categories } = useSelector(state => state.app)
+
   const { register, formState: { errors }, reset, handleSubmit, watch } = useForm({
     category: ''
   })
 
+  const [payload, setPayload] = useState({
+    description: ''
+  })
+  const [invalid, setInvalid] = useState([])
+
+  const changeValue = useCallback((e) => {
+    setPayload(e)
+  }, [payload])
+
+
   const handleCreateProd = (data) => {
-    if(data?.category) data.category = categories?.find(el => el._id === data.category)?.title
-    console.log(data)
+    const invalids = validate(payload, setInvalid)
+    if (invalids === 0) {
+      if (data?.category) data.category = categories?.find(el => el._id === data.category)?.title
+      const fData = { ...data, ...payload }
+      const formData = new FormData()
+      for (let i of Object.entries(fData)) formData.append(i[0], i[1])
+    }
   }
 
   return (
@@ -28,6 +45,17 @@ const CreateProduct = () => {
           <div className='w-full my-6 flex gap-4'>
             <Select label='Category' options={categories?.map(el => ({ code: el?._id, value: el?.title }))} register={register} id='category' validate={{ required: 'Vui long nhap day du thong tin' }} style='flex-auto' errors={errors} />
             <Select label='Brand' options={categories?.find(el => el._id === watch('category'))?.brand?.map(el => ({ code: el, value: el }))} register={register} id='brand' style='flex-auto' errors={errors} />
+          </div>
+          <Markdown name='description' changeValue={changeValue} invalid={invalid} setInvalid={setInvalid} label='Description' />
+          <div className='flex flex-col gap-2 mt-8'>
+            <label htmlFor='thumb' className='font-semibold'>Upload Thumb</label>
+            <input type='file' id='thumb' {...register('thumb', { required: 'Vui long nhap day du thong tin!' })} />
+            {errors['thumb'] && <small className='text-xs text-red-500'>{errors['thumb']?.message}</small>}
+          </div>
+          <div className='flex flex-col gap-2 mb-6 mt-8'>
+            <label htmlFor='images' className='font-semibold'>Upload Images</label>
+            <input type='file' id='images' multiple {...register('images', { required: 'Vui long nhap day du thong tin' })} />
+            {errors['images'] && <small className='text-xs text-red-500'>{errors['images']?.message}</small>}
           </div>
           <Button type='submit' name='Create' />
         </form>

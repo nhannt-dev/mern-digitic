@@ -49,7 +49,7 @@ export const validate = (payload, setInvalid) => {
                     setInvalid(prev => [...prev, { name: arr[0], mes: 'Mật khẩu nên nhập từ 6 kí tự trở lên!' }])
                 }
                 break;
-
+            
             default:
                 break;
         }
@@ -62,5 +62,5 @@ export const roundPrice = price => Math.round(price / 1000) * 1000
 
 export const range = (start, end) => {
     const length = (end + 1) - start
-    return Array.from({length},(_, index) => start + index)
+    return Array.from({ length }, (_, index) => start + index)
 }

@@ -9,7 +9,6 @@ import 'react-toastify/dist/ReactToastify.css'
 import { Modal } from './components'
 import { CreateProduct, Dashboard, ManageOrder, ManageProduct, ManageUser, AdminLayout } from './pages/admin'
 import { Profile, MemberLayout } from './pages/member'
-
 const { ALL, HOME, LOGIN, PUBLIC, BLOGS, OUR_SERVICES, DETAIL_PRODUCT__CATEGORY__PID__TITLE, PRODUCTS, FINAL_REGISTER, RESET_PASSWORD, ADMIN, MANAGE_USER, MANAGE_ORDER, MEMBER, PROFILE, CREATE_PRODUCT, DASHBOARD, MANAGE_PRODUCTS } = path
 
 function App() {
