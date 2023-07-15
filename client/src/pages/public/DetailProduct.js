@@ -6,6 +6,7 @@ import Slider from 'react-slick'
 import MagnifyImg from 'react-image-magnify'
 import { roundPrice, formatMoney, renderStar, capitalize } from '../../utils/helpers'
 import { extraInfo } from '../../utils/constants'
+import * as DOMpurify from 'dompurify'
 
 const settings = {
   dots: false,
@@ -112,9 +113,10 @@ const DetailProduct = () => {
             <span className='text-sm text-main italic'>Đã bán: {product?.sold}</span>
           </div>
           <ul className='pl-4 list-square text-sm text-gray-500 leading-6'>
-            {product?.description?.map((el, index) => (
+            {product?.description?.length > 1 && product?.description?.map((el, index) => (
               <li key={index}>{el}</li>
             ))}
+            {product?.description?.length === 1 && <div className='text-sm' dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(product?.description[0])}}></div>}
           </ul>
           <div className='flex flex-col gap-8'>
             <div className='flex items-center gap-4'>

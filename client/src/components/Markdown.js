@@ -4,7 +4,6 @@ import { Editor } from '@tinymce/tinymce-react'
 const apiKey = process.env.REACT_APP_TINYMCE
 
 const Markdown = ({ label, value, changeValue, name, invalid, setInvalid }) => {
-    console.log({ invalid, name })
     return (
         <div className='flex flex-col'>
             <span>{label}</span>

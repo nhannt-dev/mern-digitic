@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux'
 import { validate, getBase64 } from '../../utils/helpers'
 import { toast } from 'react-toastify'
 import icons from '../../utils/icons'
+import { apiCreateProduct } from '../../apis'
 
 const { BiTrash } = icons
 
@@ -30,13 +31,21 @@ const CreateProduct = () => {
   }, [payload])
 
 
-  const handleCreateProd = (data) => {
+  const handleCreateProd = async (data) => {
+    console.log(data)
     const invalids = validate(payload, setInvalid)
     if (invalids === 0) {
       if (data?.category) data.category = categories?.find(el => el._id === data.category)?.title
       const fData = { ...data, ...payload }
-      const formData = new FormData()
+      let formData = new FormData()
       for (let i of Object.entries(fData)) formData.append(i[0], i[1])
+      if (fData.thumb) formData.append('thumb', fData.thumb[0])
+      if (fData.images) {
+        for (let image of fData.images) formData.append('images', image)
+      }
+      const res = await apiCreateProduct(formData)
+      console.log(formData)
+      console.log(res)
     }
   }
 
