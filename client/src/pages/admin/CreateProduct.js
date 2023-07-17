@@ -1,15 +1,21 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Form, Select, Button, Markdown } from '../../components'
-import { useSelector } from 'react-redux'
+import { Form, Select, Button, Markdown, Loading } from '../../components'
+import { useDispatch, useSelector } from 'react-redux'
 import { validate, getBase64 } from '../../utils/helpers'
 import { toast } from 'react-toastify'
 import icons from '../../utils/icons'
 import { apiCreateProduct } from '../../apis'
+import { showModal } from '../../app/appSlice'
+import path from '../../utils/path'
+import { useNavigate } from 'react-router-dom'
 
 const { BiTrash } = icons
+const {ADMIN, MANAGE_PRODUCTS} = path
 
 const CreateProduct = () => {
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
   const { categories } = useSelector(state => state.app)
 
   const { register, formState: { errors }, reset, handleSubmit, watch } = useForm({
@@ -32,7 +38,6 @@ const CreateProduct = () => {
 
 
   const handleCreateProd = async (data) => {
-    console.log(data)
     const invalids = validate(payload, setInvalid)
     if (invalids === 0) {
       if (data?.category) data.category = categories?.find(el => el._id === data.category)?.title
@@ -43,9 +48,15 @@ const CreateProduct = () => {
       if (fData.images) {
         for (let image of fData.images) formData.append('images', image)
       }
+      dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
       const res = await apiCreateProduct(formData)
-      console.log(formData)
-      console.log(res)
+      dispatch(showModal({ isShowModal: false, modalChildren: null }))
+      if (res?.success) {
+        toast.success(res?.mes)
+        reset()
+        setPreview({ thumb: null, images: [] })
+        navigate(`/${ADMIN}/${MANAGE_PRODUCTS}`)
+      } else toast.error(res?.mes)
     }
   }
 

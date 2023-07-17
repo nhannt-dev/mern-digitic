@@ -91,7 +91,7 @@ const DetailProduct = () => {
                 height: 1500,
                 src: currentImg
               }
-            }} />
+            }} className='my-auto' />
           </div>
           <div className='w-[458px]'>
             <Slider className='flex gap-2 justify-between' {...settings}>
@@ -116,7 +116,7 @@ const DetailProduct = () => {
             {product?.description?.length > 1 && product?.description?.map((el, index) => (
               <li key={index}>{el}</li>
             ))}
-            {product?.description?.length === 1 && <div className='text-sm' dangerouslySetInnerHTML={{__html: DOMpurify.sanitize(product?.description[0])}}></div>}
+            {product?.description?.length === 1 && <div className='text-sm line-clamp-6' dangerouslySetInnerHTML={{ __html: DOMpurify.sanitize(product?.description[0]) }}></div>}
           </ul>
           <div className='flex flex-col gap-8'>
             <div className='flex items-center gap-4'>
