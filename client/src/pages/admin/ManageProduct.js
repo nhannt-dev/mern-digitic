@@ -3,18 +3,18 @@ import { useForm } from 'react-hook-form'
 import { Form, Pagination } from '../../components'
 import { apiGetProducts } from '../../apis'
 import moment from 'moment'
+import { useSearchParams } from 'react-router-dom'
+import useDebounce from '../../utils/debounce'
 
 const ManageProduct = () => {
-  const { register, formState: { errors }, reset, handleSubmit } = useForm()
+  const [params] = useSearchParams()
+  const { register, formState: { errors }, reset, handleSubmit, watch } = useForm()
+  let debounce = useDebounce(watch('q'), 500)
   const [products, setProducts] = useState(null)
   const [counts, setCounts] = useState(0)
 
-  const handleSearchProduct = (data) => {
-    console.log(data)
-  }
-
   const fetchProducts = async (params) => {
-    const res = await apiGetProducts(params)
+    const res = await apiGetProducts({ ...params, limit: 10 })
     if (res?.success) {
       setProducts(res?.products)
       setCounts(res?.counts)
@@ -22,8 +22,10 @@ const ManageProduct = () => {
   }
 
   useEffect(() => {
-    fetchProducts()
-  }, [])
+    const searchParams = Object.fromEntries([...params])
+    if (debounce) searchParams.q = debounce
+    fetchProducts(searchParams)
+  }, [params, debounce])
 
 
   return (
@@ -32,7 +34,7 @@ const ManageProduct = () => {
         <h1 className='text-3xl font-bold tracking-tight'>Manage Products</h1>
       </div>
       <div className='flex w-full pt-[29px] justify-end items-center z-10 px-4'>
-        <form className='w-[25%]' onSubmit={handleSubmit(handleSearchProduct)}>
+        <form className='w-[25%]'>
           <Form id='q' register={register} errors={errors} fullWith placeholder='Tìm kiếm sản phẩm...' />
         </form>
       </div>
@@ -56,7 +58,7 @@ const ManageProduct = () => {
         <tbody>
           {products?.map((el, index) => (
             <tr key={el?._id}>
-              <td className='text-center'>{++index}</td>
+              <td className='text-center'>{((params.get('page') > 1 ? params.get('page') - 1 : 0) * 10) + ++index}</td>
               <td className='flex justify-center'>
                 <img src={el?.thumb} alt='nhannt-dev' className='w-12 h-12 object-cover' />
               </td>

@@ -48,7 +48,19 @@ exports.getProducts = asyncHandler(async (req, res) => {
         const clq = colorArr.map(el => ({ color: { $regex: el, $options: 'i' } }))
         clqObject = { $or: clq }
     }
-    const qs = { ...clqObject, ...formattedQueries }
+    let queryObj = {}
+    if (queries?.q) {
+        delete formattedQueries.q
+        queryObj = {
+            $or: [
+                { color: { $regex: queries?.q, $options: 'i' } },
+                { title: { $regex: queries?.q, $options: 'i' } },
+                { category: { $regex: queries?.q, $options: 'i' } },
+                { brand: { $regex: queries?.q, $options: 'i' } }
+            ]
+        }
+    }
+    const qs = { ...clqObject, ...formattedQueries, ...queryObj }
     let queryCommand = Product.find(qs)
     if (req.query.sort) { //localhost:5000/api/product/sort=-price -> Sắp sếp giảm dần ngược lại tăng dần
         const sortBy = req.query.sort.split(",").join(" ")
