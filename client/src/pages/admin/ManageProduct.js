@@ -5,13 +5,16 @@ import { apiGetProducts } from '../../apis'
 import moment from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import useDebounce from '../../utils/debounce'
+import { UpdateProduct } from '.'
 
 const ManageProduct = () => {
   const [params] = useSearchParams()
-  const { register, formState: { errors }, reset, handleSubmit, watch } = useForm()
+  const { register, formState: { errors }, watch } = useForm()
   let debounce = useDebounce(watch('q'), 500)
   const [products, setProducts] = useState(null)
   const [counts, setCounts] = useState(0)
+  const [edit, setEdit] = useState(null)
+  const [isUpdated, setIsUpdated] = useState(false)
 
   const fetchProducts = async (params) => {
     const res = await apiGetProducts({ ...params, limit: 10 })
@@ -21,19 +24,22 @@ const ManageProduct = () => {
     }
   }
 
+  const reRender = () => setIsUpdated(!isUpdated)
+
   useEffect(() => {
     const searchParams = Object.fromEntries([...params])
     if (debounce) searchParams.q = debounce
     fetchProducts(searchParams)
-  }, [params, debounce])
-
-
+  }, [params, debounce, isUpdated])
   return (
     <div className='w-full flex flex-col gap-4 relative'>
+      {edit && <div className='absolute inset-0 bg-gray-100 min-h-screen z-10'>
+        <UpdateProduct edit={edit} reRender={reRender} />
+      </div>}
       <div className='bg-gray-100 pt-[29px] p-4 border-b w-full flex fixed justify-between items-center'>
         <h1 className='text-3xl font-bold tracking-tight'>Manage Products</h1>
       </div>
-      <div className='flex w-full pt-[29px] justify-end items-center z-10 px-4'>
+      <div className='flex w-full pt-[29px] justify-end items-center z-2 px-4'>
         <form className='w-[25%]'>
           <Form id='q' register={register} errors={errors} fullWith placeholder='Tìm kiếm sản phẩm...' />
         </form>
@@ -71,6 +77,10 @@ const ManageProduct = () => {
               <td className='text-center'>{el?.color}</td>
               <td className='text-center'>{el?.totalRatings}</td>
               <td className='text-center'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
+              <td className='flex flex-row gap-2 justify-center items-center'>
+                <span onClick={() => setEdit(el)} className='px-3 py-1 cursor-pointer hover:bg-orange-500 rounded-md bg-orange-600 text-white'>Edit</span>
+                <span className='px-3 py-1 cursor-pointer hover:bg-red-500 rounded-md bg-red-600 text-white'>Delete</span>
+              </td>
             </tr>
           ))}
         </tbody>
