@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Pagination } from '../../components'
-import { apiGetProducts } from '../../apis'
+import { apiGetProducts, apiDeleteProduct } from '../../apis'
 import moment from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import useDebounce from '../../utils/debounce'
 import { UpdateProduct } from '.'
+import Swal from 'sweetalert2'
+import { toast } from 'react-toastify'
 
 const ManageProduct = () => {
   const [params] = useSearchParams()
@@ -15,26 +17,43 @@ const ManageProduct = () => {
   const [counts, setCounts] = useState(0)
   const [edit, setEdit] = useState(null)
   const [isUpdated, setIsUpdated] = useState(false)
-
+  
+  const reRender = () => setIsUpdated(!isUpdated)
+  
   const fetchProducts = async (params) => {
-    const res = await apiGetProducts({ ...params, limit: 10 })
+    const res = await apiGetProducts({ ...params, limit: 10, sort: '-createdAt' })
     if (res?.success) {
       setProducts(res?.products)
       setCounts(res?.counts)
     }
   }
-
-  const reRender = () => setIsUpdated(!isUpdated)
+  
+  const handleDeleteProd = (pid) => {
+    Swal.fire({
+      title: 'Cảnh báo!',
+      text: 'Bạn có chắc chắn muốn xóa?',
+      icon: 'warning',
+      showCancelButton: true
+    }).then(async (rs) => {
+      if (rs.isConfirmed) {
+        const res = await apiDeleteProduct(pid)
+        if (res?.success) toast.success(res?.mes)
+        else toast.error(res?.mes)
+        reRender()
+      }
+    })
+  }
 
   useEffect(() => {
     const searchParams = Object.fromEntries([...params])
     if (debounce) searchParams.q = debounce
     fetchProducts(searchParams)
   }, [params, debounce, isUpdated])
+
   return (
     <div className='w-full flex flex-col gap-4 relative'>
       {edit && <div className='absolute inset-0 bg-gray-100 min-h-screen z-10'>
-        <UpdateProduct edit={edit} reRender={reRender} />
+        <UpdateProduct edit={edit} reRender={reRender} setEdit={setEdit} />
       </div>}
       <div className='bg-gray-100 pt-[29px] p-4 border-b w-full flex fixed justify-between items-center'>
         <h1 className='text-3xl font-bold tracking-tight'>Manage Products</h1>
@@ -79,7 +98,7 @@ const ManageProduct = () => {
               <td className='text-center'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
               <td className='flex flex-row gap-2 justify-center items-center'>
                 <span onClick={() => setEdit(el)} className='px-3 py-1 cursor-pointer hover:bg-orange-500 rounded-md bg-orange-600 text-white'>Edit</span>
-                <span className='px-3 py-1 cursor-pointer hover:bg-red-500 rounded-md bg-red-600 text-white'>Delete</span>
+                <span onClick={() => handleDeleteProd(el?._id)} className='px-3 py-1 cursor-pointer hover:bg-red-500 rounded-md bg-red-600 text-white'>Delete</span>
               </td>
             </tr>
           ))}

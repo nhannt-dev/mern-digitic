@@ -1,21 +1,17 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { useNavigate } from 'react-router-dom'
 import { Button, Form, Loading, Markdown, Select } from '../../components'
-import { apiCreateProduct } from '../../apis'
+import { apiUpdateProduct } from '../../apis'
 import icons from '../../utils/icons'
-import path from '../../utils/path'
 import { getBase64, validate } from '../../utils/helpers'
 import { toast } from 'react-toastify'
 import { showModal } from '../../app/appSlice'
 
 const { BiTrash } = icons
-const { ADMIN, MANAGE_PRODUCTS } = path
 
-const UpdateProduct = ({ edit, reRender }) => {
+const UpdateProduct = ({ edit, reRender, setEdit }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { categories } = useSelector(state => state.app)
 
     const { register, formState: { errors }, reset, handleSubmit, watch } = useForm({
@@ -37,25 +33,23 @@ const UpdateProduct = ({ edit, reRender }) => {
     }, [payload])
 
 
-    const handleCreateProd = async (data) => {
+    const handleUpdateProd = async (data) => {
         const invalids = validate(payload, setInvalid)
         if (invalids === 0) {
-            if (data?.category) data.category = categories?.find(el => el._id === data.category)?.title
-            const fData = { ...data, ...payload }
+            if (data?.category) data.category = categories?.find(el => el.title === data.category)?.title
+            let fData = { ...data, ...payload }
+            fData.thumb = data?.thumb?.length === 0 ? preview.thumb : data.thumb[0]
             let formData = new FormData()
             for (let i of Object.entries(fData)) formData.append(i[0], i[1])
-            if (fData.thumb) formData.append('thumb', fData.thumb[0])
-            if (fData.images) {
-                for (let image of fData.images) formData.append('images', image)
-            }
+            fData.images = data?.images.length === 0 ? preview.images : data.images
+            for (let image of fData.images) formData.append('images', image)
             dispatch(showModal({ isShowModal: true, modalChildren: <Loading /> }))
-            const res = await apiCreateProduct(formData)
+            const res = await apiUpdateProduct(formData, edit?._id)
             dispatch(showModal({ isShowModal: false, modalChildren: null }))
             if (res?.success) {
                 toast.success(res?.mes)
-                reset()
-                setPreview({ thumb: null, images: [] })
-                navigate(`/${ADMIN}/${MANAGE_PRODUCTS}`)
+                reRender()
+                setEdit(null)
             } else toast.error(res?.mes)
         }
     }
@@ -108,15 +102,14 @@ const UpdateProduct = ({ edit, reRender }) => {
         })
     }, [edit])
 
-    console.log(edit?.thumb)
-
     return (
         <div className='w-full flex flex-col gap-4 relative'>
-            <div className='bg-gray-100 pt-[29px] p-4 border-b w-full flex fixed justify-between items-center'>
+            <div className='bg-gray-100 pt-[29px] p-4 border-b w-[86%] flex fixed justify-between items-center right-0'>
                 <h1 className='text-3xl font-bold tracking-tight'>Update Product</h1>
+                <span className='text-white bg-main p-3 rounded-md hover:bg-[#f54949] cursor-pointer' onClick={() => setEdit(null)}>Cancel</span>
             </div>
             <div className='p-4 mt-[90px]'>
-                <form onSubmit={handleSubmit(handleCreateProd)}>
+                <form onSubmit={handleSubmit(handleUpdateProd)}>
                     <Form label='Product Name' register={register} errors={errors} id='title' fullWith validate={{ required: 'Vui long nhap day du thong tin' }} placeholder='Product Name' />
                     <div className='w-full my-6 flex gap-4'>
                         <Form label='Price' register={register} errors={errors} id='price' style='flex-auto' validate={{ required: 'Vui long nhap day du thong tin' }} placeholder='Product Price' type='number' />
@@ -130,7 +123,7 @@ const UpdateProduct = ({ edit, reRender }) => {
                     <Markdown name='description' changeValue={changeValue} invalid={invalid} setInvalid={setInvalid} label='Description' value={payload.description} />
                     <div className='flex flex-col gap-2 mt-8'>
                         <label htmlFor='thumb' className='font-semibold'>Upload Thumb</label>
-                        <input type='file' id='thumb' {...register('thumb', { required: 'Vui long nhap day du thong tin!' })} />
+                        <input type='file' id='thumb' {...register('thumb')} />
                         {errors['thumb'] && <small className='text-xs text-red-500'>{errors['thumb']?.message}</small>}
                     </div>
                     {edit.thumb && <div className='my-4'>
@@ -138,7 +131,7 @@ const UpdateProduct = ({ edit, reRender }) => {
                     </div>}
                     <div className='flex flex-col gap-2 mb-6 mt-8'>
                         <label htmlFor='images' className='font-semibold'>Upload Images</label>
-                        <input type='file' id='images' multiple {...register('images', { required: 'Vui long nhap day du thong tin' })} />
+                        <input type='file' id='images' multiple {...register('images')} />
                         {errors['images'] && <small className='text-xs text-red-500'>{errors['images']?.message}</small>}
                     </div>
                     {preview.images.length > 0 && <div className='my-4 flex w-full gap-3 flex-wrap'>

@@ -90,11 +90,14 @@ exports.getProducts = asyncHandler(async (req, res) => {
 
 exports.updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
+    const files = req?.files
+    if(files?.thumb) req.body.thumb = files?.thumb[0]?.path
+    if(files?.images) req.body.images = files?.images?.map(el => el?.path)
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title)
     const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, { new: true })
     return res.status(200).json({
         success: updatedProduct ? true : false,
-        updatedProduct: updatedProduct ? updatedProduct : 'Không thể cập nhật sản phẩm'
+        mes: updatedProduct ? 'Cập nhật sản phẩm thành công!' : 'Không thể cập nhật sản phẩm'
     })
 })
 
@@ -103,7 +106,7 @@ exports.deleteProduct = asyncHandler(async (req, res) => {
     const deletedProduct = await Product.findByIdAndDelete(pid)
     return res.status(200).json({
         success: deletedProduct ? true : false,
-        deletedProduct: deletedProduct ? deletedProduct : 'Không thể xóa sản phẩm'
+        mes: deletedProduct ? 'Xóa sản phẩm thành công!' : 'Không thể xóa sản phẩm'
     })
 })
 
