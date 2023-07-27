@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const { ObjectId } = mongoose.Types
+const { model } = mongoose
 
 const blogSchema = new mongoose.Schema({
     title: {
@@ -46,4 +47,4 @@ const blogSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 })
 
-module.exports = mongoose.model('Blog', blogSchema)
+module.exports = model('Blog', blogSchema)

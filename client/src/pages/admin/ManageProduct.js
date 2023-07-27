@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Form, Pagination } from '../../components'
+import { Form, Pagination, UpdateProduct, Variants } from '../../components'
 import { apiGetProducts, apiDeleteProduct } from '../../apis'
 import moment from 'moment'
 import { useSearchParams } from 'react-router-dom'
 import useDebounce from '../../utils/debounce'
-import { UpdateProduct } from '.'
 import Swal from 'sweetalert2'
 import { toast } from 'react-toastify'
+import icons from '../../utils/icons'
+
+const { LuGitBranchPlus, FiEdit, BiTrash } = icons
 
 const ManageProduct = () => {
   const [params] = useSearchParams()
@@ -17,9 +19,10 @@ const ManageProduct = () => {
   const [counts, setCounts] = useState(0)
   const [edit, setEdit] = useState(null)
   const [isUpdated, setIsUpdated] = useState(false)
-  
+  const [variants, setVariants] = useState(null)
+
   const reRender = () => setIsUpdated(!isUpdated)
-  
+
   const fetchProducts = async (params) => {
     const res = await apiGetProducts({ ...params, limit: 10, sort: '-createdAt' })
     if (res?.success) {
@@ -27,7 +30,7 @@ const ManageProduct = () => {
       setCounts(res?.counts)
     }
   }
-  
+
   const handleDeleteProd = (pid) => {
     Swal.fire({
       title: 'Cảnh báo!',
@@ -54,6 +57,9 @@ const ManageProduct = () => {
     <div className='w-full flex flex-col gap-4 relative'>
       {edit && <div className='absolute inset-0 bg-gray-100 min-h-screen z-10'>
         <UpdateProduct edit={edit} reRender={reRender} setEdit={setEdit} />
+      </div>}
+      {variants && <div className='absolute inset-0 bg-gray-100 min-h-screen z-10'>
+        <Variants variants={variants} reRender={reRender} setVariants={setVariants} />
       </div>}
       <div className='bg-gray-100 pt-[29px] p-4 border-b w-full flex fixed justify-between items-center'>
         <h1 className='text-3xl font-bold tracking-tight'>Manage Products</h1>
@@ -82,7 +88,7 @@ const ManageProduct = () => {
         </thead>
         <tbody>
           {products?.map((el, index) => (
-            <tr key={el?._id}>
+            <tr key={el?._id} className='border-b'>
               <td className='text-center'>{((params.get('page') > 1 ? params.get('page') - 1 : 0) * 10) + ++index}</td>
               <td className='flex justify-center'>
                 <img src={el?.thumb} alt='nhannt-dev' className='w-12 h-12 object-cover' />
@@ -97,8 +103,15 @@ const ManageProduct = () => {
               <td className='text-center'>{el?.totalRatings}</td>
               <td className='text-center'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
               <td className='flex flex-row gap-2 justify-center items-center'>
-                <span onClick={() => setEdit(el)} className='px-3 py-1 cursor-pointer hover:bg-orange-500 rounded-md bg-orange-600 text-white'>Edit</span>
-                <span onClick={() => handleDeleteProd(el?._id)} className='px-3 py-1 cursor-pointer hover:bg-red-500 rounded-md bg-red-600 text-white'>Delete</span>
+                <span onClick={() => setEdit(el)} className='px-3 py-1 cursor-pointer hover:bg-orange-500 rounded-md bg-orange-600 text-white'>
+                  <FiEdit size={18} />
+                </span>
+                <span onClick={() => handleDeleteProd(el?._id)} className='px-3 py-1 cursor-pointer hover:bg-red-500 rounded-md bg-red-600 text-white'>
+                  <BiTrash size={18} />
+                </span>
+                <span onClick={() => setVariants(el)} className='px-3 py-1 cursor-pointer hover:bg-cyan-500 rounded-md bg-cyan-600 text-white'>
+                  <LuGitBranchPlus size={18} />
+                </span>
               </td>
             </tr>
           ))}

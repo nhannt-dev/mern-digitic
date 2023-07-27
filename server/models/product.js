@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const { ObjectId } = mongoose.Types
+const { model } = mongoose
 
 const productSchema = new mongoose.Schema({
     title: {
@@ -58,9 +59,17 @@ const productSchema = new mongoose.Schema({
     totalRatings: {
         type: Number,
         default: 0
-    }
+    },
+    variants: [
+        {
+            color: String,
+            price: Number,
+            thumb: String,
+            images: Array
+        }
+    ]
 }, {
     timestamps: true
 })
 
-module.exports = mongoose.model('Product', productSchema)
+module.exports = model('Product', productSchema)

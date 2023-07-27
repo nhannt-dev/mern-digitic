@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 const { ObjectId } = mongoose.Types
+const { model } = mongoose
 
 const brandSchema = new mongoose.Schema({
     title: {
@@ -12,4 +13,4 @@ const brandSchema = new mongoose.Schema({
 }, { timestamps: true }
 )
 
-module.exports = mongoose.model('Brand', brandSchema)
+module.exports = model('Brand', brandSchema)

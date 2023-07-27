@@ -91,8 +91,8 @@ exports.getProducts = asyncHandler(async (req, res) => {
 exports.updateProduct = asyncHandler(async (req, res) => {
     const { pid } = req.params
     const files = req?.files
-    if(files?.thumb) req.body.thumb = files?.thumb[0]?.path
-    if(files?.images) req.body.images = files?.images?.map(el => el?.path)
+    if (files?.thumb) req.body.thumb = files?.thumb[0]?.path
+    if (files?.images) req.body.images = files?.images?.map(el => el?.path)
     if (req.body && req.body.title) req.body.slug = slugify(req.body.title)
     const updatedProduct = await Product.findByIdAndUpdate(pid, req.body, { new: true })
     return res.status(200).json({
@@ -145,5 +145,18 @@ exports.uploadImagesProduct = asyncHandler(async (req, res) => {
     return res.status(200).json({
         status: true,
         updatedProduct: response ? response : 'Không thể tải ảnh sản phẩm lên hệ thống!'
+    })
+})
+
+exports.createVariants = asyncHandler(async (req, res) => {
+    const { pid } = req.params
+    const { color, price } = req.body
+    const thumb = req.files?.thumb[0]?.path
+    const images = req.files?.images?.map(el => el?.path)
+    if (!(color, price)) throw new Error('Vui lòng nhập đầy đủ thông tin!')
+    const variantProduct = await Product.findByIdAndUpdate(pid, { $push: { variants: { color, price, thumb, images } } }, { new: true })
+    return res.status(200).json({
+        success: variantProduct ? true : false,
+        mes: variantProduct ? 'Tạo biến thể thành công!' : 'Có lỗi trong việc tạo biến thể!'
     })
 })

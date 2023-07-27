@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const { model } = mongoose
+
 const couponSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -19,4 +21,4 @@ const couponSchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('Coupon', couponSchema)
+module.exports = model('Coupon', couponSchema)

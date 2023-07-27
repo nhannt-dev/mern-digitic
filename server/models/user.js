@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const crypto = require('crypto')
 
 const { ObjectId } = mongoose.Types
+const { model } = mongoose
 
 const userSchema = new mongoose.Schema({
     firstname: {
@@ -86,4 +87,4 @@ userSchema.methods = {
     }
 }
 
-module.exports = mongoose.model('User', userSchema)
+module.exports = model('User', userSchema)

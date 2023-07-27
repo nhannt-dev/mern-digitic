@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const { model } = mongoose
+
 const blogCategorySchema = new mongoose.Schema({
     title: {
         type: String,
@@ -11,4 +13,4 @@ const blogCategorySchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('BlogCategory', blogCategorySchema)
+module.exports = model('BlogCategory', blogCategorySchema)

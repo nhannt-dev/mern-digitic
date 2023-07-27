@@ -1,12 +1,12 @@
 import React, { memo, useCallback, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
-import { Button, Form, Loading, Markdown, Select } from '../../components'
-import { apiUpdateProduct } from '../../apis'
-import icons from '../../utils/icons'
-import { getBase64, validate } from '../../utils/helpers'
+import { Button, Form, Loading, Markdown, Select } from '.'
+import { apiUpdateProduct } from '../apis'
+import icons from '../utils/icons'
+import { getBase64, validate } from '../utils/helpers'
 import { toast } from 'react-toastify'
-import { showModal } from '../../app/appSlice'
+import { showModal } from '../app/appSlice'
 
 const { BiTrash } = icons
 

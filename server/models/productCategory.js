@@ -1,5 +1,7 @@
 const mongoose = require('mongoose')
 
+const { model } = mongoose
+
 const productCategorySchema = new mongoose.Schema({
     title: {
         type: String,
@@ -19,4 +21,4 @@ const productCategorySchema = new mongoose.Schema({
     timestamps: true
 })
 
-module.exports = mongoose.model('ProductCategory', productCategorySchema)
+module.exports = model('ProductCategory', productCategorySchema)
