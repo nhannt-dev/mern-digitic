@@ -8,13 +8,11 @@ import { toast } from 'react-toastify'
 import { useDispatch } from 'react-redux'
 import { showModal } from '../app/appSlice'
 import { apiCreateVariantsProduct } from '../apis'
-import { useNavigate } from 'react-router-dom'
 
 const { BiTrash } = icons
 
 const Variants = ({ variants, reRender, setVariants }) => {
     const dispatch = useDispatch()
-    const navigate = useNavigate()
     const { register, handleSubmit, formState: { errors }, reset, watch } = useForm()
     const [preview, setPreview] = useState({
         thumb: null,

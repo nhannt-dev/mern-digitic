@@ -18,7 +18,7 @@ exports.register = asyncHandler(async (req, res) => {
     if (user) throw new Error('Người dùng đã tồn tại')
     else {
         const token = uniqToken()
-        const emailHash = Buffer.from(email).toString('base64') + '@' + token
+        const emailHash = email + '@' + token
         const newUser = await User.create({ email: emailHash, password, firstname, lastname, mobile })
         if (newUser) {
             const html = `

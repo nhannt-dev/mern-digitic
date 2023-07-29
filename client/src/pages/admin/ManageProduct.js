@@ -82,6 +82,7 @@ const ManageProduct = () => {
             <th>Sold</th>
             <th>Color</th>
             <th>Ratings</th>
+            <th>Variants</th>
             <th>Date created</th>
             <th>Actions</th>
           </tr>
@@ -101,6 +102,7 @@ const ManageProduct = () => {
               <td className='text-center'>{el?.sold}</td>
               <td className='text-center'>{el?.color}</td>
               <td className='text-center'>{el?.totalRatings}</td>
+              <td className='text-center'>{el?.variants?.length}</td>
               <td className='text-center'>{moment(el?.createdAt).format('DD/MM/YYYY')}</td>
               <td className='flex flex-row gap-2 justify-center items-center'>
                 <span onClick={() => setEdit(el)} className='px-3 py-1 cursor-pointer hover:bg-orange-500 rounded-md bg-orange-600 text-white'>

@@ -7,6 +7,7 @@ import MagnifyImg from 'react-image-magnify'
 import { roundPrice, formatMoney, renderStar, capitalize } from '../../utils/helpers'
 import { extraInfo } from '../../utils/constants'
 import * as DOMpurify from 'dompurify'
+import clsx from 'clsx'
 
 const settings = {
   dots: false,
@@ -23,6 +24,7 @@ const DetailProduct = () => {
   const [quantity, setQuantity] = useState(1)
   const [related, setRelated] = useState(null)
   const [update, setUpdate] = useState(false)
+  const [variants, setVariants] = useState(null)
 
   const fetchDetail = async () => {
     const res = await apiGetProduct(pid)
@@ -31,7 +33,7 @@ const DetailProduct = () => {
       setCurrentImg(res?.productData?.thumb)
     }
   }
-
+  console.log(product)
   const fetchProducts = async () => {
     const res = await apiGetProducts({ category: capitalize(category) })
     if (res?.success) setRelated(res?.products)
@@ -118,6 +120,20 @@ const DetailProduct = () => {
             ))}
             {product?.description?.length === 1 && <div className='text-sm line-clamp-6' dangerouslySetInnerHTML={{ __html: DOMpurify.sanitize(product?.description[0]) }}></div>}
           </ul>
+          <div className='my-4 flex items-center gap-4'>
+            <span className='font-bold'>Colors:</span>
+            <div className='flex flex-wrap gap-4 items-center w-full'>
+              {product?.variants?.map(el => (
+                <div onClick={() => setVariants(el?._id)} className={clsx('flex items-center gap-2 p-2 border cursor-pointer', variants === el?._id && 'border-main')}>
+                  <img src={el?.thumb} className='w-8 h-8 rounded-md object-cover' alt='nhannt-dev' />
+                  <span className='flex flex-col'>
+                    <span>{el?.color}</span>
+                    <span className='text-sm'>{el?.price}</span>
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
           <div className='flex flex-col gap-8'>
             <div className='flex items-center gap-4'>
               <span className='font-semibold'>Quantity: </span>
