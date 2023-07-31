@@ -18,7 +18,10 @@ const path = {
     CREATE_PRODUCT: 'create-product',
     MANAGE_ORDER: 'manage-order',
     MEMBER: 'member',
-    PROFILE: 'profile'
+    PROFILE: 'profile',
+    CART: 'cart',
+    HISTORY: 'history',
+    WISHLIST: 'wishlist'
 }
 
 export default path

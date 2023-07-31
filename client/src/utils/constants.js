@@ -1,8 +1,8 @@
 import icons from './icons'
 import path from './path'
 
-const { BsShieldShaded, BsReplyFill, AiFillGift, RiTruckFill, FaTty, AiOutlineDashboard, MdGroups, BsFillBoxFill, RiBillFill } = icons
-const { HOME, PRODUCTS, BLOGS, OUR_SERVICES, FAQ, ADMIN, DASHBOARD, MANAGE_USER, CREATE_PRODUCT, MANAGE_PRODUCTS, MANAGE_ORDER } = path
+const { BsShieldShaded, BsReplyFill, AiFillGift, RiTruckFill, FaTty, AiOutlineDashboard, MdGroups, BsFillBoxFill, RiBillFill, AiOutlineProfile, AiOutlineShoppingCart, AiOutlineHistory, MdOutlineFavoriteBorder } = icons
+const { HOME, PRODUCTS, BLOGS, OUR_SERVICES, FAQ, ADMIN, DASHBOARD, MANAGE_USER, CREATE_PRODUCT, MANAGE_PRODUCTS, MANAGE_ORDER, MEMBER, PROFILE, CART, HISTORY, WISHLIST } = path
 
 export const navigation = [
     {
@@ -135,7 +135,7 @@ export const status = [
     'Rất tốt'
 ]
 
-export const menuItems = [
+export const menuItemsAdmin = [
     {
         type: 'single',
         text: 'Dashboard',
@@ -169,6 +169,33 @@ export const menuItems = [
         text: 'Manage Order',
         path: `/${ADMIN}/${MANAGE_ORDER}`,
         icon: <RiBillFill />
+    },
+]
+
+export const menuItemsUser = [
+    {
+        type: 'single',
+        text: 'Profile',
+        path: `/${MEMBER}/${PROFILE}`,
+        icon: <AiOutlineProfile />
+    },
+    {
+        type: 'single',
+        text: 'Cart',
+        path: `/${MEMBER}/${CART}`,
+        icon: <AiOutlineShoppingCart />
+    },
+    {
+        type: 'single',
+        text: 'History',
+        path: `/${MEMBER}/${HISTORY}`,
+        icon: <AiOutlineHistory />
+    },
+    {
+        type: 'single',
+        text: 'Wishlist',
+        path: `/${MEMBER}/${WISHLIST}`,
+        icon: <MdOutlineFavoriteBorder />
     },
 ]
 
