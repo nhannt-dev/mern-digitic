@@ -209,7 +209,7 @@ exports.updateUser = asyncHandler(async (req, res) => {
     const response = await User.findByIdAndUpdate(_id, req.body, { new: true }).select('-password -role -refreshToken')
     return res.status(200).json({
         success: response ? true : false,
-        updatedUser: response ? response : 'Có lỗi trong quá trình thao tác'
+        mes: response ? 'Cập nhật thông tin cá nhân thành công!' : 'Có lỗi trong quá trình thao tác'
     })
 })
 

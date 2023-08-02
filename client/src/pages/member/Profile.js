@@ -1,12 +1,20 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { Form, Button } from '../../components'
-import { useSelector } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { apiUpdateProfileUser } from '../../apis'
+import { getCurrent } from '../../app/actions'
+import { toast } from 'react-toastify'
+import path from '../../utils/path'
+import { useNavigate } from 'react-router-dom'
+
+const { HOME } = path
 
 const Profile = () => {
-    const { register, formState: { errors }, reset, handleSubmit } = useForm()
+    const { register, formState: { errors, isDirty }, reset, handleSubmit } = useForm()
     const { current } = useSelector(state => state.user)
-    const handleUpdateProfile = (data) => console.log(data)
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
     useEffect(() => {
         reset({
             firstname: current?.firstname,
@@ -14,8 +22,16 @@ const Profile = () => {
             email: current?.email,
             mobile: current?.mobile
         })
-
     }, [])
+
+    const handleUpdateProfile = async (data) => {
+        const res = await apiUpdateProfileUser(data)
+        if (res?.success) {
+            dispatch(getCurrent())
+            toast.success(res?.mes)
+            navigate(`/${HOME}`)
+        }
+    }
 
     return (
         <div className='w-full relative px-4'>
@@ -23,9 +39,19 @@ const Profile = () => {
             <form onSubmit={handleSubmit(handleUpdateProfile)} className='w-3/5 mx-auto py-8 flex flex-col gap-4'>
                 <Form label='Firstname' register={register} errors={errors} id='firstname' validate={{ required: 'Vui lòng nhập đầy đủ thông tin!' }} />
                 <Form label='Lastname' register={register} errors={errors} id='lastname' validate={{ required: 'Vui lòng nhập đầy đủ thông tin!' }} />
-                <Form label='Email' register={register} errors={errors} id='email' validate={{ required: 'Vui lòng nhập đầy đủ thông tin!' }} />
-                <Form label='Mobile' register={register} errors={errors} id='mobile' validate={{ required: 'Vui lòng nhập đầy đủ thông tin!' }} />
-                <Button name='Update Profile' type='submit' />
+                <Form label='Email' register={register} errors={errors} id='email' validate={{
+                    required: 'Vui lòng nhập đầy đủ thông tin!', pattern: {
+                        value: /^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                        message: 'Email không hợp lệ'
+                    }
+                }} />
+                <Form label='Mobile' register={register} errors={errors} id='mobile' validate={{
+                    required: 'Vui lòng nhập đầy đủ thông tin!', pattern: {
+                        value: /^\d{10}$/,
+                        message: 'Số điện thoại không hợp lệ!'
+                    }
+                }} />
+                {isDirty && <Button name='Update Profile' type='submit' />}
             </form>
         </div>
     )
